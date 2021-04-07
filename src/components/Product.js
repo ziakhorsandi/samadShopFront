@@ -6,6 +6,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import Raiting from './Raiting';
+import teal from '@material-ui/core/colors/teal';
 
 const useStyles = makeStyles({
   root: {
@@ -14,6 +16,9 @@ const useStyles = makeStyles({
   },
   img: {
     objectFit: 'contain',
+  },
+  bg: {
+    backgroundColor: teal[100],
   },
 });
 
@@ -29,7 +34,6 @@ const Product = ({ product }) => {
           alt='Contemplative Reptile'
           height='140'
           image={product.image}
-          // title='Contemplative Reptile'
         />
         <CardContent>
           <Typography gutterBottom variant='h6' component='h2' align='right'>
@@ -45,11 +49,16 @@ const Product = ({ product }) => {
             {product.description}
           </Typography>
           <Typography noWrap variant='button' component='div' align='right'>
-            {product.numReviews} از {product.rating}
+            {/* {product.numReviews} از {product.rating} */}
+            <Raiting
+              value={product.rating}
+              txt={`از ${product.numReviews} بازدید`}
+            />
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
+
+      <CardActions className={classes.bg}>
         <Typography noWrap variant='button' component='div' align='right'>
           {product.price} تومان
         </Typography>
