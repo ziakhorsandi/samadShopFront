@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
+import teal from '@material-ui/core/colors/teal';
 
 import Vazir from './assets/fonts/Vazir.ttf';
 
@@ -15,6 +16,11 @@ const vazir = {
 const theme = createMuiTheme({
   typography: {
     fontFamily: 'Vazir',
+  },
+  palette: {
+    primary: {
+      main: teal[500],
+    },
   },
   overrides: {
     MuiCssBaseline: {
