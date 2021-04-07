@@ -9,6 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import Raiting from './Raiting';
 import teal from '@material-ui/core/colors/teal';
 
+import { useHistory } from 'react-router-dom';
+
 const useStyles = makeStyles({
   root: {
     // maxWidth: 345,
@@ -24,10 +26,15 @@ const useStyles = makeStyles({
 
 const Product = ({ product }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea
+        onClick={() => {
+          history.push(`/product/${product._id}`);
+        }}
+      >
         <CardMedia
           className={classes.img}
           component='img'
@@ -49,7 +56,6 @@ const Product = ({ product }) => {
             {product.description}
           </Typography>
           <Typography noWrap variant='button' component='div' align='right'>
-            {/* {product.numReviews} از {product.rating} */}
             <Raiting
               value={product.rating}
               txt={`از ${product.numReviews} بازدید`}
@@ -57,7 +63,6 @@ const Product = ({ product }) => {
           </Typography>
         </CardContent>
       </CardActionArea>
-
       <CardActions className={classes.bg}>
         <Typography noWrap variant='button' component='div' align='right'>
           {product.price} تومان

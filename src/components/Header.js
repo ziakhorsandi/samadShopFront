@@ -13,6 +13,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
+import { useHistory } from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -79,6 +81,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
+  const history = useHistory();
+  const linkToSomewhere = (path) => {
+    history.push(path);
+  };
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -105,7 +111,12 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          linkToSomewhere(`/shopcard`);
+          handleMobileMenuClose();
+        }}
+      >
         <IconButton aria-label='show 4 new mails' color='inherit'>
           <Badge badgeContent={4} color='secondary'>
             <ShoppingCartIcon />
@@ -114,7 +125,12 @@ export default function PrimarySearchAppBar() {
         <p>سبد خرید</p>
       </MenuItem>
 
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          linkToSomewhere(`/login`);
+          handleMobileMenuClose();
+        }}
+      >
         <IconButton aria-label='account of current user' color='inherit'>
           <AccountCircle />
         </IconButton>
@@ -127,7 +143,13 @@ export default function PrimarySearchAppBar() {
     <div className={classes.grow}>
       <AppBar position='static'>
         <Toolbar>
-          <Typography className={classes.title} variant='h6' noWrap>
+          <Typography
+            className={classes.title}
+            variant='h6'
+            noWrap
+            onClick={() => linkToSomewhere(`/`)}
+            style={{ cursor: 'pointer' }}
+          >
             بقالی اسمال آقا
           </Typography>
           <div className={classes.search}>
@@ -145,16 +167,19 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label='show 4 new cards' color='inherit'>
+            <IconButton
+              color='inherit'
+              onClick={() => linkToSomewhere(`/shopcard`)}
+            >
               <Badge badgeContent={4} color='secondary'>
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
 
             <IconButton
-              aria-label='account of current user'
               aria-controls={menuId}
               color='inherit'
+              onClick={() => linkToSomewhere(`/login`)}
             >
               <AccountCircle />
             </IconButton>
