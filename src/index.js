@@ -4,10 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
+
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  //   <ThemeProvider theme={theme}>
+  //     <App />
+  //   </ThemeProvider>
+  // </React.StrictMode>,
+  <ThemeProvider theme={theme}>
     <App />
-  </React.StrictMode>,
+  </ThemeProvider>,
   document.getElementById('root')
 );
 
