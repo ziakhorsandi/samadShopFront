@@ -1,18 +1,13 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import { Container, Grid, Box, Typography } from '@material-ui/core';
 import Product from '../components/Product';
 import { makeStyles } from '@material-ui/core/styles';
 import products from '../products';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   gridItem: {
     display: 'grid',
     placeItems: 'center',
-  },
-  title: {
-    margin: '2rem 0',
   },
 });
 
@@ -21,15 +16,11 @@ const HomeScreen = () => {
 
   return (
     <Container maxWidth='xl'>
-      <Typography
-        align='right'
-        component='h1'
-        variant='h5'
-        color='textSecondary'
-        className={classes.title}
-      >
-        جدید ترین محصولات :
-      </Typography>
+      <Box fontWeight={900} my={4}>
+        <Typography component='h1' variant='h6' color='primary'>
+          جدید ترین محصولات :
+        </Typography>
+      </Box>
       <Grid container spacing={3}>
         {products.map((product) => (
           <Grid

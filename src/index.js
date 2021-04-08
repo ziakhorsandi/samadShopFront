@@ -6,16 +6,18 @@ import reportWebVitals from './reportWebVitals';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 ReactDOM.render(
-  // <React.StrictMode>
-  //   <ThemeProvider theme={theme}>
-  //     <App />
-  //   </ThemeProvider>
-  // </React.StrictMode>,
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>,
+  <StylesProvider jss={jss}>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </StylesProvider>,
   document.getElementById('root')
 );
 

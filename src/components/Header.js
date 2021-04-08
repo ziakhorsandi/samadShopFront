@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
     },
   },
+
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -40,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      marginRight: theme.spacing(4),
       width: 'auto',
     },
   },
@@ -56,9 +56,11 @@ const useStyles = makeStyles((theme) => ({
   inputRoot: {
     color: 'inherit',
   },
+
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    paddingRight: `calc(1em + ${theme.spacing(4)}px)`,
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
@@ -150,7 +152,7 @@ export default function PrimarySearchAppBar() {
             onClick={() => linkToSomewhere(`/`)}
             style={{ cursor: 'pointer' }}
           >
-            بقالی اسمال آقا
+            بقالی صمد آقا
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>

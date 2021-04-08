@@ -14,6 +14,7 @@ const vazir = {
 };
 
 const theme = createMuiTheme({
+  direction: 'rtl',
   typography: {
     fontFamily: 'Vazir',
   },
