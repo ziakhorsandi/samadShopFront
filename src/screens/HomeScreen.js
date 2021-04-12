@@ -26,9 +26,8 @@ const HomeScreen = () => {
     <>
       {loading ? (
         <Loader />
-      ) : true ? (
-        // <h2>{error}</h2>
-        <Message msg={'Error goes here'} />
+      ) : error ? (
+        <Message msg={error} />
       ) : (
         <Container maxWidth='xl'>
           <Box fontWeight={900} my={4}>

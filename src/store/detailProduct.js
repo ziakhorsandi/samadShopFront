@@ -3,21 +3,21 @@ import { createSelector } from 'reselect';
 import * as apiActions from './api';
 
 const slice = createSlice({
-  name: 'products',
+  name: 'detailProduct',
   initialState: {
     list: [],
     loading: false,
     error: '',
   },
   reducers: {
-    productsRequested: (products, action) => {
+    productRequested: (products, action) => {
       products.loading = true;
     },
-    productsRequestFail: (products, action) => {
+    productRequestFail: (products, action) => {
       products.loading = false;
       products.error = action.payload;
     },
-    productsReceived: (products, action) => {
+    productReceived: (products, action) => {
       products.list = action.payload;
       products.loading = false;
     },
@@ -25,29 +25,23 @@ const slice = createSlice({
 });
 
 export const {
-  productsRequested,
-  productsRequestFail,
-  productsReceived,
+  productRequested,
+  productRequestFail,
+  productReceived,
 } = slice.actions;
 //-------------Action creators-----------
 
 const url = '/products';
-export const loadProducts = () =>
+export const loadProduct = (id) =>
   apiActions.apiCallBegan({
-    url,
-    onStart: productsRequested.type,
-    onSucess: productsReceived.type,
-    onError: productsRequestFail.type,
+    url: `${url}/${id}`,
+    onStart: productRequested.type,
+    onSucess: productReceived.type,
+    onError: productRequestFail.type,
   });
 
 //--------------Selector-------------
 
-export const selectAllProducts = (state) => state.entities.products;
-
-// export const getBugsByUser = (userId) =>
-//   createSelector(
-//     (state) => state.entities.bugs,
-//     (bugs) => bugs.list.filter((bug) => bug.user === userId)
-//   );
+export const selectDetailProduct = (state) => state.entities.detailProduct;
 
 export default slice.reducer;
