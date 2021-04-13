@@ -115,7 +115,7 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem
         onClick={() => {
-          linkToSomewhere(`/shopcard`);
+          linkToSomewhere(`/shopcart`);
           handleMobileMenuClose();
         }}
       >
@@ -171,7 +171,7 @@ export default function PrimarySearchAppBar() {
           <div className={classes.sectionDesktop}>
             <IconButton
               color='inherit'
-              onClick={() => linkToSomewhere(`/shopcard`)}
+              onClick={() => linkToSomewhere(`/shopcart`)}
             >
               <Badge badgeContent={4} color='secondary'>
                 <ShoppingCartIcon />

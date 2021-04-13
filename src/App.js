@@ -1,7 +1,8 @@
 import Header from './components/Header';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import CartScreen from './screens/CartScreen';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
@@ -14,6 +15,7 @@ function App() {
         <Switch>
           <Route exact path='/' component={HomeScreen} />
           <Route path='/product/:id' component={ProductScreen} />
+          <Route path='/shopcart/:id?' component={CartScreen} />
         </Switch>
       </Router>
     </Provider>

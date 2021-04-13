@@ -10,16 +10,16 @@ const slice = createSlice({
     error: '',
   },
   reducers: {
-    productRequested: (products, action) => {
-      products.loading = true;
+    productRequested: (detailProduct) => {
+      detailProduct.loading = true;
     },
-    productRequestFail: (products, action) => {
-      products.loading = false;
-      products.error = action.payload;
+    productRequestFail: (detailProduct, action) => {
+      detailProduct.loading = false;
+      detailProduct.error = action.payload;
     },
-    productReceived: (products, action) => {
-      products.list = action.payload;
-      products.loading = false;
+    productReceived: (detailProduct, action) => {
+      detailProduct.list = action.payload;
+      detailProduct.loading = false;
     },
   },
 });

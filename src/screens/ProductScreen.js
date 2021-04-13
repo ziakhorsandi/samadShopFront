@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardMedia,
@@ -8,6 +8,10 @@ import {
   CardContent,
   Typography,
   Button,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Raiting from './../components/Raiting';
@@ -27,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     direction: 'rtl',
   },
+  formControl: {
+    margin: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    minWidth: 120,
+  },
 }));
 
 const ProductScreen = ({ match }) => {
@@ -34,6 +43,7 @@ const ProductScreen = ({ match }) => {
   const { list: product, loading, error } = useSelector(selectDetailProduct);
   const classes = useStyles();
   const history = useHistory();
+  const [qty, setQty] = useState();
   useEffect(() => {
     console.log(`match.params.id`, match.params.id);
     dispatch(loadProduct(match.params.id));
@@ -120,12 +130,42 @@ const ProductScreen = ({ match }) => {
                       )}
                     </Box>
 
+                    {product.countInStock > 0 && (
+                      <FormControl className={classes.formControl}>
+                        <InputLabel id='demo-simple-select-label'>
+                          تعداد
+                        </InputLabel>
+                        {/* <Box my={1} p={0.5}>
+                        </Box> */}
+                        <Select
+                          labelId='demo-simple-select-label'
+                          id='demo-simple-select'
+                          value={qty}
+                          onChange={(e) => {
+                            setQty(e.target.value);
+                          }}
+                        >
+                          {[...Array(product.countInStock).keys()].map((x) => (
+                            <MenuItem value={x + 1}>{x + 1}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+
                     <Box my={2}>
                       <Button
                         variant='contained'
                         color='primary'
                         className={classes.button}
                         startIcon={<AddShoppingCartOutlinedIcon />}
+                        onClick={() => {
+                          history.push(
+                            `/shopcart/${match.params.id}?qty=${qty}`
+                          );
+                        }}
+                        disabled={
+                          product.countInStock === 0 ? true : qty ? false : true
+                        }
                       >
                         <Box mr={2}>افزودن به سبد خرید</Box>
                       </Button>
