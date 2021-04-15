@@ -1,5 +1,26 @@
-import { createAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-export const apiCallBegan = createAction('api/CallBegan');
-export const apiCallSuccess = createAction('api/CallSuccess');
-export const apiCallFailed = createAction('api/CallFailed');
+const slice = createSlice({
+  name: 'api',
+  initialState: { loading: false, error: '' },
+  reducers: {
+    apiCallBegan: (api) => {
+      api.loading = true;
+    },
+    apiCallSuccess: (api) => {
+      api.loading = false;
+    },
+    apiCallFailed: (api, action) => {
+      api.loading = false;
+      api.error = action.payload;
+    },
+  },
+});
+
+export const { apiCallBegan, apiCallSuccess, apiCallFailed } = slice.actions;
+//-------------Action creators-----------
+
+//--------------Selector-------------
+export const selectApiValue = (state) => state.entities.api;
+
+export default slice.reducer;

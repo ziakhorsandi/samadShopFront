@@ -5,7 +5,8 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import { Typography } from '@material-ui/core';
+// import Rating from '@material-ui/lab/Rating';
 import Raiting from './Raiting';
 import teal from '@material-ui/core/colors/teal';
 
@@ -43,7 +44,7 @@ const Product = ({ product }) => {
           image={product.image}
         />
         <CardContent>
-          <Typography gutterBottom variant='h6' component='h2' align='right'>
+          <Typography gutterBottom variant='h6' component='h2'>
             {product.name}
           </Typography>
           <Typography
@@ -60,6 +61,12 @@ const Product = ({ product }) => {
               value={product.rating}
               txt={`از ${product.numReviews} بازدید`}
             />
+            {/* <Rating
+              name='half-rating-read'
+              defaultValue={product.rating}
+              precision={0.5}
+              readOnly
+            /> */}
           </Typography>
         </CardContent>
       </CardActionArea>

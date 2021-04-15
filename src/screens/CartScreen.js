@@ -1,7 +1,11 @@
 import React from 'react';
 
-const CartScreen = () => {
-  return <div>Cart</div>;
+import { useDispatch } from 'react-redux';
+import { addToCart } from './../store/cart';
+
+const CartScreen = ({ match }) => {
+  const dispatch = useDispatch();
+  return <div></div>;
 };
 
 export default CartScreen;

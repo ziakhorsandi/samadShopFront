@@ -6,6 +6,7 @@ import Product from '../components/Product';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadProducts, selectAllProducts } from '../store/products';
+import { selectApiValue } from '../store/api';
 
 const useStyles = makeStyles({
   gridItem: {
@@ -17,7 +18,8 @@ const useStyles = makeStyles({
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { list, loading, error } = useSelector(selectAllProducts);
+  const { list } = useSelector(selectAllProducts);
+  const { loading, error } = useSelector(selectApiValue);
   useEffect(() => {
     dispatch(loadProducts());
   }, [dispatch]);

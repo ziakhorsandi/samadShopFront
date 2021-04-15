@@ -19,6 +19,7 @@ import AddShoppingCartOutlinedIcon from '@material-ui/icons/AddShoppingCartOutli
 import BackIcon from '@material-ui/icons/ArrowBackRounded';
 import { useHistory } from 'react-router-dom';
 import { loadProduct, selectDetailProduct } from './../store/detailProduct';
+import { selectApiValue } from './../store/api';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './../components/Loader';
 import Message from './../components/Message';
@@ -40,10 +41,11 @@ const useStyles = makeStyles((theme) => ({
 
 const ProductScreen = ({ match }) => {
   const dispatch = useDispatch();
-  const { list: product, loading, error } = useSelector(selectDetailProduct);
+  const { list: product } = useSelector(selectDetailProduct);
+  const { loading, error } = useSelector(selectApiValue);
   const classes = useStyles();
   const history = useHistory();
-  const [qty, setQty] = useState();
+  const [qty, setQty] = useState(1);
   useEffect(() => {
     console.log(`match.params.id`, match.params.id);
     dispatch(loadProduct(match.params.id));
@@ -135,8 +137,7 @@ const ProductScreen = ({ match }) => {
                         <InputLabel id='demo-simple-select-label'>
                           تعداد
                         </InputLabel>
-                        {/* <Box my={1} p={0.5}>
-                        </Box> */}
+
                         <Select
                           labelId='demo-simple-select-label'
                           id='demo-simple-select'
@@ -146,7 +147,9 @@ const ProductScreen = ({ match }) => {
                           }}
                         >
                           {[...Array(product.countInStock).keys()].map((x) => (
-                            <MenuItem value={x + 1}>{x + 1}</MenuItem>
+                            <MenuItem key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </MenuItem>
                           ))}
                         </Select>
                       </FormControl>

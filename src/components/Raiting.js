@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     transform: 'matrix(-1, 0, 0, 1, 0, 0)',
   },
   txt: {
-    marginRight: '1rem',
+    marginLeft: '1rem',
   },
 });
 
