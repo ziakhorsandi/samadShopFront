@@ -14,25 +14,34 @@ const slice = createSlice({
   },
   reducers: {
     cartItemAdded: (cart, action) => {
-      let index = -1;
-      index = cart.items.findIndex((item) => item.id === action.payload.id);
+      const index = cart.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
       if (index === -1) {
         cart.items.push(action.payload);
       } else {
-        ++cart.items[index].qty;
+        cart.items[index].qty = action.payload.qty;
+        // ++cart.items[index].qty;
       }
       localStorage.setItem('cartItems', JSON.stringify(cart.items));
+    },
+    cartItemDeleted: (cart, action) => {
+      const index = cart.items.findIndex((item) => item.id === action.payload);
+      if (index !== -1) {
+        cart.items.splice(index, 1);
+        localStorage.setItem('cartItems', JSON.stringify(cart.items));
+      }
     },
   },
 });
 
-const { cartItemAdded } = slice.actions;
+const { cartItemAdded, cartItemDeleted } = slice.actions;
 //-------------Action creators-----------
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   let product = getState().entities.detailProduct.list;
 
-  if (product._id) {
+  if (product._id && id) {
     if (product._id !== id) {
       await dispatch(loadProduct(id));
       product = getState().entities.detailProduct.list;
@@ -45,9 +54,12 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
   let item = { id: product._id, name, price, countInStock, brand, image, qty };
   return dispatch(cartItemAdded(item));
 };
+export const delACart = (id) => (dispatch) => {
+  return dispatch(cartItemDeleted(id));
+};
 
 //--------------Selector-------------
 
-// export const selectDetailProduct = (state) => state.entities.detailProduct;
+export const selectCart = (state) => state.entities.cart.items;
 
 export default slice.reducer;
