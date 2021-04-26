@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -14,6 +14,11 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
 import { useHistory } from 'react-router-dom';
+import { selectUserInfo } from './../store/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { userLogedOut as logOut } from './../store/user';
+import { Box, Button } from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -79,11 +84,18 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  btn: {
+    // display: 'grid',
+    // placeItems: 'center',
+    margin: theme.spacing(0, 2),
+  },
 }));
 
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
   const history = useHistory();
+  const { userInfo } = useSelector(selectUserInfo);
+  const dispatch = useDispatch();
   const linkToSomewhere = (path) => {
     history.push(path);
   };
@@ -100,6 +112,10 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  // const handleLouOut = () => {
+  //   dispatch(logOut);
+  // };
+
   const menuId = 'primary-search-account-menu';
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -115,6 +131,22 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem
         onClick={() => {
+          if (userInfo) {
+            linkToSomewhere(`/users/profile`);
+          } else {
+            linkToSomewhere(`/users/login`);
+          }
+          handleMobileMenuClose();
+        }}
+      >
+        <IconButton aria-label='account of current user' color='inherit'>
+          <AccountCircle />
+        </IconButton>
+        {userInfo ? <p>{userInfo.name}</p> : <p>ورود</p>}
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
           linkToSomewhere(`/shopcart`);
           handleMobileMenuClose();
         }}
@@ -127,17 +159,19 @@ export default function PrimarySearchAppBar() {
         <p>سبد خرید</p>
       </MenuItem>
 
-      <MenuItem
-        onClick={() => {
-          linkToSomewhere(`/login`);
-          handleMobileMenuClose();
-        }}
-      >
-        <IconButton aria-label='account of current user' color='inherit'>
-          <AccountCircle />
-        </IconButton>
-        <p>ورود</p>
-      </MenuItem>
+      {userInfo && (
+        <MenuItem
+          onClick={() => {
+            dispatch(logOut({}));
+            handleMobileMenuClose();
+          }}
+        >
+          <IconButton aria-label='account of current user' color='inherit'>
+            <ExitToAppIcon />
+          </IconButton>
+          <p>خروج</p>
+        </MenuItem>
+      )}
     </Menu>
   );
 
@@ -169,6 +203,16 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            {userInfo && (
+              <IconButton
+                color='inherit'
+                onClick={() => {
+                  dispatch(logOut({}));
+                }}
+              >
+                <ExitToAppIcon />
+              </IconButton>
+            )}
             <IconButton
               color='inherit'
               onClick={() => linkToSomewhere(`/shopcart`)}
@@ -178,13 +222,21 @@ export default function PrimarySearchAppBar() {
               </Badge>
             </IconButton>
 
-            <IconButton
+            <Button
+              className={classes.btn}
               aria-controls={menuId}
               color='inherit'
-              onClick={() => linkToSomewhere(`/login`)}
+              endIcon={<AccountCircle></AccountCircle>}
+              onClick={() => {
+                if (userInfo) {
+                  linkToSomewhere(`/users/profile`);
+                } else {
+                  linkToSomewhere(`/users/login`);
+                }
+              }}
             >
-              <AccountCircle />
-            </IconButton>
+              <Box mt={0.7}>{userInfo ? userInfo.name : 'Login'}</Box>
+            </Button>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

@@ -21,6 +21,6 @@ export const { apiCallBegan, apiCallSuccess, apiCallFailed } = slice.actions;
 //-------------Action creators-----------
 
 //--------------Selector-------------
-export const selectApiValue = (state) => state.entities.api;
+export const selectApiValue = (state) => state.api;
 
 export default slice.reducer;
