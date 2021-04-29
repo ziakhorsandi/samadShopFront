@@ -1,17 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { apiCallBegan } from './api';
 
-const userInfoFromlocalStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userLoginInfoFromlocalStorage = localStorage.getItem('userLoginInfo')
+  ? JSON.parse(localStorage.getItem('userLoginInfo'))
   : null;
 
 const slice = createSlice({
   name: 'user',
-  initialState: { userInfo: userInfoFromlocalStorage },
+  initialState: {
+    userLoginInfo: userLoginInfoFromlocalStorage,
+    userDetail: null,
+  },
   reducers: {
     userLogedinSuccess: (user, action) => {
-      user.userInfo = action.payload;
-      localStorage.setItem('userInfo', JSON.stringify(user.userInfo));
+      user.userLoginInfo = action.payload;
+      localStorage.setItem('userLoginInfo', JSON.stringify(user.userLoginInfo));
     },
     loginRequestFail: (user, action) => {
       //Must change the error message here for specific use
@@ -22,30 +25,100 @@ const slice = createSlice({
       }
     },
     userLogedOut: (user) => {
-      user.userInfo = null;
-      localStorage.removeItem('userInfo');
+      user.userLoginInfo = null;
+      localStorage.removeItem('userLoginInfo');
+    },
+    // userRegisterdSuccess: (user) => {},
+    userDetailRequestSuccess: (user, action) => {
+      user.userDetail = action.payload;
+    },
+    userUpdatedSuccess: (user, action) => {
+      user.userLoginInfo = action.payload;
+      localStorage.setItem('userLoginInfo', JSON.stringify(user.userLoginInfo));
+      const { _id, name, email, isAdmin } = action.payload;
+      user.userDetail = { _id, name, email, isAdmin };
     },
   },
 });
 
-const { userLogedinSuccess, loginRequestFail } = slice.actions;
+const {
+  userLogedinSuccess,
+  loginRequestFail,
+  // userRegisterdSuccess,
+  userDetailRequestSuccess,
+  userUpdatedSuccess,
+} = slice.actions;
 export const { userLogedOut } = slice.actions;
 //-------------Action creators-----------
-const url = '/users/login';
+const createHeader = (token) => {
+  let config = { 'Content-Type': 'application/json' };
+  if (token) {
+    config['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+};
 export const login = (email, password) => (dispatch) => {
+  const url = '/users/login';
   return dispatch(
     apiCallBegan({
       url,
       method: 'POST',
+      headers: createHeader(),
       onSucess: userLogedinSuccess.type,
       onError: loginRequestFail.type,
-      headers: { 'Content-Type': 'application/json' },
       data: { email, password },
     })
   );
 };
 
+export const register = (name, email, password) => (dispatch) => {
+  const url = '/users';
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'POST',
+      headers: createHeader(),
+      // onSucess: userRegisterdSuccess.type,
+      onSucess: userLogedinSuccess.type,
+      data: { name, email, password },
+    })
+  );
+};
+
+export const getUserDetail = (id) => (dispatch, getState) => {
+  const { token } = getState().user.userLoginInfo;
+  const url = '/users/profile';
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'GET',
+      headers: createHeader(token),
+      onSucess: userDetailRequestSuccess.type,
+    })
+  );
+};
+export const updateUserProfile = (name, email, password) => (
+  dispatch,
+  getState
+) => {
+  const { token } = getState().user.userLoginInfo;
+  const url = '/users/profile';
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'PUT',
+      headers: createHeader(token),
+      onSucess: userUpdatedSuccess.type,
+      data: {
+        name,
+        email,
+        password,
+      },
+    })
+  );
+};
+
 //--------------Selector-------------
-export const selectUserInfo = (state) => state.user;
+export const selectUser = (state) => state.user;
 
 export default slice.reducer;

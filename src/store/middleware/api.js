@@ -26,6 +26,7 @@ const api = ({ dispatch }) => (next) => async (action) => {
       method,
       data,
       headers,
+      // timeout: 10000,
     });
 
     //Specific success action

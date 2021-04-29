@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -14,7 +14,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
 import { useHistory } from 'react-router-dom';
-import { selectUserInfo } from './../store/user';
+import { selectUser } from './../store/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogedOut as logOut } from './../store/user';
 import { Box, Button } from '@material-ui/core';
@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
   const history = useHistory();
-  const { userInfo } = useSelector(selectUserInfo);
+  const { userLoginInfo } = useSelector(selectUser);
   const dispatch = useDispatch();
   const linkToSomewhere = (path) => {
     history.push(path);
@@ -131,7 +131,7 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem
         onClick={() => {
-          if (userInfo) {
+          if (userLoginInfo) {
             linkToSomewhere(`/users/profile`);
           } else {
             linkToSomewhere(`/users/login`);
@@ -142,7 +142,7 @@ export default function PrimarySearchAppBar() {
         <IconButton aria-label='account of current user' color='inherit'>
           <AccountCircle />
         </IconButton>
-        {userInfo ? <p>{userInfo.name}</p> : <p>ورود</p>}
+        {userLoginInfo ? <p>{userLoginInfo.name}</p> : <p>ورود</p>}
       </MenuItem>
 
       <MenuItem
@@ -159,7 +159,7 @@ export default function PrimarySearchAppBar() {
         <p>سبد خرید</p>
       </MenuItem>
 
-      {userInfo && (
+      {userLoginInfo && (
         <MenuItem
           onClick={() => {
             dispatch(logOut({}));
@@ -203,7 +203,7 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {userInfo && (
+            {userLoginInfo && (
               <IconButton
                 color='inherit'
                 onClick={() => {
@@ -228,14 +228,14 @@ export default function PrimarySearchAppBar() {
               color='inherit'
               endIcon={<AccountCircle></AccountCircle>}
               onClick={() => {
-                if (userInfo) {
+                if (userLoginInfo) {
                   linkToSomewhere(`/users/profile`);
                 } else {
                   linkToSomewhere(`/users/login`);
                 }
               }}
             >
-              <Box mt={0.7}>{userInfo ? userInfo.name : 'Login'}</Box>
+              <Box mt={0.7}>{userLoginInfo ? userLoginInfo.name : 'Login'}</Box>
             </Button>
           </div>
           <div className={classes.sectionMobile}>

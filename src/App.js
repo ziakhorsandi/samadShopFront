@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreem';
+import ProfileScreen from './screens/ProfileScreen';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/shopcart/:id?' component={CartScreen} />
           <Route path='/users/login' component={LoginScreen} />
+          <Route path='/users/register' component={RegisterScreen} />
+          <Route path='/users/profile' component={ProfileScreen} />
         </Switch>
       </Router>
     </Provider>

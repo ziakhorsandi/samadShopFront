@@ -47,7 +47,6 @@ const ProductScreen = ({ match }) => {
   const history = useHistory();
   const [qty, setQty] = useState(1);
   useEffect(() => {
-    console.log(`match.params.id`, match.params.id);
     dispatch(loadProduct(match.params.id));
   }, [dispatch, match]);
   return (
