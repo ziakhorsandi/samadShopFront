@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import {
-  CardMedia,
   Card,
   Typography,
   CardContent,
@@ -20,6 +19,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, delACart, selectCart } from './../store/cart';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   img: {
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CartScreen = ({ match, location }) => {
+  const history = useHistory();
   const classes = useStyles();
 
   const productId = match.params.id;
@@ -52,12 +53,11 @@ const CartScreen = ({ match, location }) => {
         <Grid container spacing={4} justify='center'>
           <Grid item md={8} xs={12}>
             {cartItems.map((item) => (
-              <Card>
+              <Card key={item.id}>
                 <CardContent>
                   <Grid
                     container
                     spacing={2}
-                    key={item.id}
                     justify='center'
                     alignItems='center'
                   >
@@ -138,7 +138,13 @@ const CartScreen = ({ match, location }) => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button variant='contained' color='primary'>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => {
+                    history.push('/shipping');
+                  }}
+                >
                   تصویه
                 </Button>
               </CardActions>

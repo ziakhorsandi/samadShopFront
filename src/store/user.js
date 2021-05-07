@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { apiCallBegan } from './api';
+import { createHeader } from './../publicFuncs';
 
 const userLoginInfoFromlocalStorage = localStorage.getItem('userLoginInfo')
   ? JSON.parse(localStorage.getItem('userLoginInfo'))
@@ -50,13 +51,13 @@ const {
 } = slice.actions;
 export const { userLogedOut } = slice.actions;
 //-------------Action creators-----------
-const createHeader = (token) => {
-  let config = { 'Content-Type': 'application/json' };
-  if (token) {
-    config['Authorization'] = `Bearer ${token}`;
-  }
-  return config;
-};
+// const createHeader = (token) => {
+//   let config = { 'Content-Type': 'application/json' };
+//   if (token) {
+//     config['Authorization'] = `Bearer ${token}`;
+//   }
+//   return config;
+// };
 export const login = (email, password) => (dispatch) => {
   const url = '/users/login';
   return dispatch(

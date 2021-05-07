@@ -23,14 +23,7 @@ import { selectApiValue } from './../store/api';
 import { useHistory } from 'react-router';
 import Alert from '@material-ui/lab/Alert';
 
-const validateEmail = (emailAdress) => {
-  let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  if (emailAdress.match(regexEmail)) {
-    return true;
-  } else {
-    return false;
-  }
-};
+import { validateEmail } from './../publicFuncs';
 
 const useStyles = makeStyles((theme) => ({
   input: {

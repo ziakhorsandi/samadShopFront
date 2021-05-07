@@ -9,6 +9,9 @@ import configureStore from './store/configureStore';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreem';
 import ProfileScreen from './screens/ProfileScreen';
+import ShippingScreen from './screens/ShippingScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import PlaceorderScreen from './screens/PlaceorderScreen';
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
           <Route path='/users/login' component={LoginScreen} />
           <Route path='/users/register' component={RegisterScreen} />
           <Route path='/users/profile' component={ProfileScreen} />
+          <Route path='/shipping' component={ShippingScreen} />
+          <Route path='/payment' component={PaymentScreen} />
+          <Route path='/placeorder' component={PlaceorderScreen} />
         </Switch>
       </Router>
     </Provider>

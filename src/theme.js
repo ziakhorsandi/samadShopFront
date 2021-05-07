@@ -19,7 +19,7 @@ const theme = createMuiTheme({
     fontFamily: 'Vazir',
     h2: {
       fontFamily: 'Vazir',
-      fontSize: '1.2rem',
+      fontSize: '1.1rem',
       [defaultTheme.breakpoints.down('md')]: {
         fontSize: '1rem',
       },
