@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { apiCallBegan } from './api';
 import { createHeader } from './../publicFuncs';
+import { shippingAddressRemoved } from './cart';
+import { orderReset } from './order';
 
 const userLoginInfoFromlocalStorage = localStorage.getItem('userLoginInfo')
   ? JSON.parse(localStorage.getItem('userLoginInfo'))
@@ -11,6 +13,7 @@ const slice = createSlice({
   initialState: {
     userLoginInfo: userLoginInfoFromlocalStorage,
     userDetail: null,
+    error: '',
   },
   reducers: {
     userLogedinSuccess: (user, action) => {
@@ -19,7 +22,7 @@ const slice = createSlice({
     },
     loginRequestFail: (user, action) => {
       //Must change the error message here for specific use
-      if (action.payload === 401) {
+      if (action.payload === 401 || action.payload === 400) {
         user.error = 'موارد معتبر نیست';
       } else {
         user.error = action.payload;
@@ -27,6 +30,7 @@ const slice = createSlice({
     },
     userLogedOut: (user) => {
       user.userLoginInfo = null;
+      user.userDetail = null;
       localStorage.removeItem('userLoginInfo');
     },
     // userRegisterdSuccess: (user) => {},
@@ -48,16 +52,9 @@ const {
   // userRegisterdSuccess,
   userDetailRequestSuccess,
   userUpdatedSuccess,
+  userLogedOut,
 } = slice.actions;
-export const { userLogedOut } = slice.actions;
 //-------------Action creators-----------
-// const createHeader = (token) => {
-//   let config = { 'Content-Type': 'application/json' };
-//   if (token) {
-//     config['Authorization'] = `Bearer ${token}`;
-//   }
-//   return config;
-// };
 export const login = (email, password) => (dispatch) => {
   const url = '/users/login';
   return dispatch(
@@ -72,6 +69,12 @@ export const login = (email, password) => (dispatch) => {
   );
 };
 
+export const logOut = () => (dispatch) => {
+  dispatch(userLogedOut());
+  dispatch(shippingAddressRemoved());
+  dispatch(orderReset());
+};
+
 export const register = (name, email, password) => (dispatch) => {
   const url = '/users';
   return dispatch(
@@ -81,6 +84,7 @@ export const register = (name, email, password) => (dispatch) => {
       headers: createHeader(),
       // onSucess: userRegisterdSuccess.type,
       onSucess: userLogedinSuccess.type,
+      onError: loginRequestFail.type,
       data: { name, email, password },
     })
   );
@@ -98,26 +102,24 @@ export const getUserDetail = (id) => (dispatch, getState) => {
     })
   );
 };
-export const updateUserProfile = (name, email, password) => (
-  dispatch,
-  getState
-) => {
-  const { token } = getState().user.userLoginInfo;
-  const url = '/users/profile';
-  return dispatch(
-    apiCallBegan({
-      url,
-      method: 'PUT',
-      headers: createHeader(token),
-      onSucess: userUpdatedSuccess.type,
-      data: {
-        name,
-        email,
-        password,
-      },
-    })
-  );
-};
+export const updateUserProfile =
+  (name, email, password) => (dispatch, getState) => {
+    const { token } = getState().user.userLoginInfo;
+    const url = '/users/profile';
+    return dispatch(
+      apiCallBegan({
+        url,
+        method: 'PUT',
+        headers: createHeader(token),
+        onSucess: userUpdatedSuccess.type,
+        data: {
+          name,
+          email,
+          password,
+        },
+      })
+    );
+  };
 
 //--------------Selector-------------
 export const selectUser = (state) => state.user;

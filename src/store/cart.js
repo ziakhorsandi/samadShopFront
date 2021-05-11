@@ -39,6 +39,11 @@ const slice = createSlice({
       cart.shippingAddress = action.payload;
       localStorage.setItem('shippingAddress', JSON.stringify(action.payload));
     },
+    shippingAddressRemoved: (cart, action) => {
+      cart.shippingAddress = {};
+      localStorage.removeItem('shippingAddress');
+    },
+
     paymentMethodAdded: (cart, action) => {
       cart.paymentMethod = action.payload;
     },
@@ -51,6 +56,8 @@ const {
   shippingAddressAdded,
   paymentMethodAdded,
 } = slice.actions;
+
+export const { shippingAddressRemoved } = slice.actions;
 //-------------Action creators-----------
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {

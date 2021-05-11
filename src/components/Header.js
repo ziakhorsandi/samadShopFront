@@ -16,7 +16,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import { useHistory } from 'react-router-dom';
 import { selectUser } from './../store/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { userLogedOut as logOut } from './../store/user';
+import { logOut } from './../store/user';
 import { Box, Button } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
@@ -112,9 +112,10 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  // const handleLouOut = () => {
-  //   dispatch(logOut);
-  // };
+  const handleLouOut = () => {
+    dispatch(logOut());
+    linkToSomewhere(`/`);
+  };
 
   const menuId = 'primary-search-account-menu';
 
@@ -162,7 +163,7 @@ export default function PrimarySearchAppBar() {
       {userLoginInfo && (
         <MenuItem
           onClick={() => {
-            dispatch(logOut({}));
+            handleLouOut();
             handleMobileMenuClose();
           }}
         >
@@ -204,12 +205,7 @@ export default function PrimarySearchAppBar() {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {userLoginInfo && (
-              <IconButton
-                color='inherit'
-                onClick={() => {
-                  dispatch(logOut({}));
-                }}
-              >
+              <IconButton color='inherit' onClick={handleLouOut}>
                 <ExitToAppIcon />
               </IconButton>
             )}

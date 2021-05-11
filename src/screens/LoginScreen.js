@@ -24,6 +24,7 @@ import { useHistory } from 'react-router';
 import Alert from '@material-ui/lab/Alert';
 
 import { validateEmail } from './../publicFuncs';
+import CheckoutSteps from '../components/CheckoutSteps';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -50,11 +51,16 @@ const LoginScreen = ({ location }) => {
   const [emailErr, setEmailErr] = useState('');
   const [passwordErr, setPasswordErr] = useState('');
 
-  const redirect = location.search ? location.search.split('=')[1] : '/';
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.has('redirect')
+    ? searchParams.get('redirect')
+    : '/';
+
   useEffect(() => {
     if (userLoginInfo) {
       history.push(redirect);
     }
+    console.log(`redirect`, redirect);
   }, [userLoginInfo, history, redirect]);
   const formSubmit = () => {
     if (email === '' || password === '') {
@@ -76,6 +82,7 @@ const LoginScreen = ({ location }) => {
     }
 
     dispatch(login(email, password));
+    // history.push(redirect);
   };
 
   return (
@@ -84,6 +91,7 @@ const LoginScreen = ({ location }) => {
         <Loader />
       ) : (
         <>
+          {redirect === '/shipping' && <CheckoutSteps step1 />}
           <Container>
             <FormContaiter>
               <FormGroup>
@@ -93,9 +101,9 @@ const LoginScreen = ({ location }) => {
                 {error && <Alert severity='error'>{error}</Alert>}
                 {emailErr && <Alert severity='error'>{emailErr}</Alert>}
                 <FormControl className={classes.input}>
-                  <InputLabel htmlFor='my-input'>پست الکترونیک</InputLabel>
+                  <InputLabel htmlFor='loginEmail'>پست الکترونیک</InputLabel>
                   <Input
-                    id='my-input'
+                    id='loginEmail'
                     aria-describedby='my-helper-text'
                     type='email'
                     value={email}
@@ -113,9 +121,9 @@ const LoginScreen = ({ location }) => {
                 </FormControl>
                 {passwordErr && <Alert severity='error'>{passwordErr}</Alert>}
                 <FormControl className={classes.input}>
-                  <InputLabel htmlFor='my-input'>کلمه ی عبور</InputLabel>
+                  <InputLabel htmlFor='loginPass'>کلمه ی عبور</InputLabel>
                   <Input
-                    id='my-input'
+                    id='loginPass'
                     aria-describedby='my-helper-text'
                     type={showPassword ? 'text' : 'password'}
                     value={password}
@@ -150,13 +158,15 @@ const LoginScreen = ({ location }) => {
                 </FormControl>
               </FormGroup>
               <Typography variant='h2'>
-                <Link to='/users/register' className={classes.link}>
+                <Link
+                  to={`/users/register?redirect=${redirect}`}
+                  className={classes.link}
+                >
                   <Box component='span' color='primary.main'>
                     {' '}
                     ثبت نام{' '}
                   </Box>
                 </Link>
-
                 <Box component='span'>کاربر جدید</Box>
               </Typography>
             </FormContaiter>

@@ -122,7 +122,7 @@ const CartScreen = ({ match, location }) => {
               </Card>
             ))}
           </Grid>
-          <Grid item xs={12} sm={10} md={4}>
+          <Grid item xs={12} sm={12} md={4}>
             <Card className={classes.shippingCard}>
               <CardContent>
                 <Typography color='textPrimary' variant='h2'>

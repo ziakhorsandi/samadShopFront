@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { selectApiValue } from './../store/api';
 import Loader from './../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
-import { createOrder, selectOrder } from './../store/order';
+import { selectOrder, getOrderById, payOrder } from './../store/order';
 import { useHistory } from 'react-router-dom';
 import { selectPaymentMethod, selectShippingAddress } from '../store/cart';
-import CheckoutSteps from '../components/CheckoutSteps';
 import {
   Box,
   Button,
@@ -19,8 +18,8 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { selectCart } from './../store/cart';
 import Alert from '@material-ui/lab/Alert';
+import Message from './../components/Message';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,56 +44,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlaceorderScreen = () => {
+const PlaceorderScreen = ({ match }) => {
   const { error, loading } = useSelector(selectApiValue);
   const classes = useStyles();
   const shipAdd = useSelector(selectShippingAddress);
   const payMeth = useSelector(selectPaymentMethod);
-  const cartItems = useSelector(selectCart);
+  // const cartItems = useSelector(selectCart);
   const history = useHistory();
   const dispatch = useDispatch();
   const { success, detail: order } = useSelector(selectOrder);
+  const orderId = match.params.id;
 
-  const itemsPrice = cartItems.reduce(
+  const {
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+    isPaid,
+    isDelivered,
+    orderItems,
+  } = order;
+  const itemsPrice = orderItems?.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
   );
-  const shippingPrice = itemsPrice > 100 ? 0 : 10000;
-  const taxPrice = Number(0.09 * itemsPrice);
-  const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   useEffect(() => {
-    if (!shipAdd.address) {
-      history.push('/shipping');
+    if (!success) {
+      dispatch(getOrderById(orderId));
     }
-    if (!payMeth) {
-      history.push('/payment');
-    }
-    if (success) {
-      history.push(`/order/${order._id}`);
-    }
-    // eslint-disable-next-line
-  }, [history, payMeth, shipAdd, success]);
+  }, [orderId, dispatch, success]);
+
   const formSubmit = () => {
-    dispatch(
-      createOrder({
-        orderItems: cartItems,
-        shippingAddress: shipAdd,
-        paymentMethod: payMeth,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
-      })
-    );
+    dispatch(payOrder(orderId, { msg: 'This order is payed' }));
   };
+
   return (
     <>
       {loading ? (
         <Loader />
+      ) : error ? (
+        <Message msg={error} />
       ) : (
         <>
-          <CheckoutSteps step1 step2 step3 step4 />
           <Container maxWidth='xl'>
             <div style={{ padding: '0 20px' }}>
               <Grid
@@ -104,6 +95,9 @@ const PlaceorderScreen = () => {
                 justify='center'
               >
                 <Grid item xs={12} md={6}>
+                  <Typography gutterBottom variant='h6'>
+                    سفارش به شماره ی : {orderId}
+                  </Typography>
                   <Box mb={3} mt={1}>
                     <Typography gutterBottom variant='h6'>
                       ارسال به ادرس:
@@ -115,7 +109,11 @@ const PlaceorderScreen = () => {
                       </Box>
                     </Typography>
                   </Box>
-
+                  {isDelivered ? (
+                    <Alert severity='error'>{'سفارش تحویل شده'}</Alert>
+                  ) : (
+                    <Alert severity='error'>{'سفارش در حال ارسال است'}</Alert>
+                  )}
                   <Divider className={classes.divider} />
 
                   <Box my={2}>
@@ -126,6 +124,11 @@ const PlaceorderScreen = () => {
                       {payMeth}
                     </Typography>
                   </Box>
+                  {isPaid ? (
+                    <Alert severity='success'>{'پرداخت شده'}</Alert>
+                  ) : (
+                    <Alert severity='error'>{'پرداخت صورت نگرفته'}</Alert>
+                  )}
                   <Divider className={classes.divider} />
 
                   <Typography gutterBottom variant='h6'>
@@ -133,10 +136,10 @@ const PlaceorderScreen = () => {
                       اجناس سفارش داده شده :
                     </Box>
                   </Typography>
-                  {cartItems?.length === 0 ? (
+                  {orderItems?.length === 0 ? (
                     <Alert severity='error'>{'سبد خرید خالی است'}</Alert>
                   ) : (
-                    cartItems?.map((item) => (
+                    orderItems?.map((item) => (
                       <Typography key={item.id} variant='h2'>
                         <div className={classes.cartItem}>
                           <img
@@ -190,19 +193,18 @@ const PlaceorderScreen = () => {
                         secondary={`${totalPrice} تومان`}
                       />
                     </ListItem>
-                    <ListItem>
-                      {error && <Alert severity='error'>{error}</Alert>}
-                    </ListItem>
-                    <ListItem>
-                      <Button
-                        style={{ width: '100%' }}
-                        variant='outlined'
-                        color='primary'
-                        onClick={formSubmit}
-                      >
-                        خرید
-                      </Button>
-                    </ListItem>
+                    {!isPaid && (
+                      <ListItem>
+                        <Button
+                          style={{ width: '100%' }}
+                          variant='outlined'
+                          color='primary'
+                          onClick={formSubmit}
+                        >
+                          پرداخت
+                        </Button>
+                      </ListItem>
+                    )}
                   </List>
                 </Grid>
               </Grid>

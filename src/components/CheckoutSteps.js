@@ -29,6 +29,7 @@ const CheckoutSteps = (props) => {
       >
         {step1 ? (
           <Tab
+            disabled
             label='گام اول'
             onClick={() => {
               history.push('/users/login');

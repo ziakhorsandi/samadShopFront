@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, getUserDetail, updateUserProfile } from './../store/user';
 import FormContaiter from './../components/FormContaiter';
 import Loader from './../components/Loader';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import {
   Box,
   Button,
@@ -13,6 +15,13 @@ import {
   InputAdornment,
   InputLabel,
   makeStyles,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from '@material-ui/core';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
@@ -23,6 +32,7 @@ import Alert from '@material-ui/lab/Alert';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import { validateEmail } from './../publicFuncs';
+import { getAllOrders, selectOrder } from '../store/order';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -39,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const ProfileScreen = ({ location }) => {
   const { loading } = useSelector(selectApiValue);
   const { userDetail, userLoginInfo, error } = useSelector(selectUser);
+  const { allOrders } = useSelector(selectOrder);
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -63,8 +74,10 @@ const ProfileScreen = ({ location }) => {
         setName(userDetail.name);
         setEmail(userDetail.email);
       }
+      dispatch(getAllOrders());
     }
   }, [dispatch, userLoginInfo, userDetail, history]);
+
   const formSubmit = () => {
     if (email === '' || password === '' || name === '') {
       setNameErr('وجود فیلد خالی');
@@ -200,6 +213,67 @@ const ProfileScreen = ({ location }) => {
                 </FormControl>
               </FormGroup>
             </FormContaiter>
+            {allOrders[0] && (
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label='simple table'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>شناسه</TableCell>
+                      <TableCell>قیمت کل</TableCell>
+                      <TableCell align='center'>وضعیت پرداخت</TableCell>
+                      <TableCell align='center'>وضعیت ارسال</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {allOrders.map((order) => (
+                      <TableRow key={order._id}>
+                        <TableCell>{order._id}</TableCell>
+                        <TableCell>{order.totalPrice}</TableCell>
+                        {order.isPaid ? (
+                          <TableCell align='center'>
+                            <Box color='primary.main'>
+                              <CheckCircleIcon />
+                            </Box>
+                          </TableCell>
+                        ) : (
+                          <TableCell align='center'>
+                            <Box color='error.main'>
+                              <HighlightOffIcon />
+                            </Box>
+                          </TableCell>
+                        )}
+                        {order.isDelivered ? (
+                          <TableCell align='center'>
+                            <Box color='primary.main'>
+                              <CheckCircleIcon />
+                            </Box>
+                          </TableCell>
+                        ) : (
+                          <TableCell align='center'>
+                            <Box color='error.main'>
+                              <HighlightOffIcon />
+                            </Box>
+                          </TableCell>
+                        )}
+                        <TableCell>
+                          <Button
+                            style={{ width: '100%' }}
+                            variant='outlined'
+                            color='primary'
+                            onClick={() => {
+                              history.push(`/order/${order._id}`);
+                            }}
+                          >
+                            جزییات
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </Container>
         </>
       )}

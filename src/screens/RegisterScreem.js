@@ -24,6 +24,7 @@ import Alert from '@material-ui/lab/Alert';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import { validateEmail } from './../publicFuncs';
+import CheckoutSteps from '../components/CheckoutSteps';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -54,7 +55,11 @@ const RegisterScreen = ({ location }) => {
   const [passwordErr, setPasswordErr] = useState('');
   const [nameErr, setNameErr] = useState('');
 
-  const redirect = location.search ? location.search.split('=')[1] : '/';
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.has('redirect')
+    ? searchParams.get('redirect')
+    : '/';
+
   useEffect(() => {
     if (userLoginInfo) {
       history.push(redirect);
@@ -89,6 +94,7 @@ const RegisterScreen = ({ location }) => {
     }
 
     dispatch(register(name, email, password));
+    // history.push(redirect);
   };
 
   return (
@@ -97,6 +103,7 @@ const RegisterScreen = ({ location }) => {
         <Loader />
       ) : (
         <>
+          {redirect === '/shipping' && <CheckoutSteps step1 />}
           <Container>
             <FormContaiter>
               <FormGroup>
@@ -196,7 +203,10 @@ const RegisterScreen = ({ location }) => {
                 </FormControl>
               </FormGroup>
               <Typography variant='h2'>
-                <Link to='/users/login' className={classes.link}>
+                <Link
+                  to={`/users/login?redirect=${redirect}`}
+                  className={classes.link}
+                >
                   <Box component='span' color='primary.main'>
                     {' '}
                     ورود{' '}
