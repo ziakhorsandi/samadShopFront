@@ -13,6 +13,7 @@ const slice = createSlice({
   initialState: {
     userLoginInfo: userLoginInfoFromlocalStorage,
     userDetail: null,
+    userList: [],
     error: '',
   },
   reducers: {
@@ -31,6 +32,7 @@ const slice = createSlice({
     userLogedOut: (user) => {
       user.userLoginInfo = null;
       user.userDetail = null;
+      user.userList = [];
       localStorage.removeItem('userLoginInfo');
     },
     // userRegisterdSuccess: (user) => {},
@@ -43,6 +45,15 @@ const slice = createSlice({
       const { _id, name, email, isAdmin } = action.payload;
       user.userDetail = { _id, name, email, isAdmin };
     },
+    userListRequestSuccess: (users, action) => {
+      users.userList = action.payload;
+    },
+    deleteUserSuccess: (users, action) => {
+      const index = users.userList.findIndex(
+        (user) => user.id === action.extraData
+      );
+      users.userList.splice(index, 1);
+    },
   },
 });
 
@@ -53,6 +64,8 @@ const {
   userDetailRequestSuccess,
   userUpdatedSuccess,
   userLogedOut,
+  userListRequestSuccess,
+  deleteUserSuccess,
 } = slice.actions;
 //-------------Action creators-----------
 export const login = (email, password) => (dispatch) => {
@@ -120,6 +133,31 @@ export const updateUserProfile =
       })
     );
   };
+export const getUserLists = () => (dispatch, getState) => {
+  const { token } = getState().user.userLoginInfo;
+  const url = '/users';
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'GET',
+      headers: createHeader(token),
+      onSucess: userListRequestSuccess.type,
+    })
+  );
+};
+export const deleteUser = (id) => (dispatch, getState) => {
+  const { token } = getState().user.userLoginInfo;
+  const url = `/users/${id}`;
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'DELETE',
+      headers: createHeader(token),
+      onSucess: deleteUserSuccess.type,
+      extraData: id,
+    })
+  );
+};
 
 //--------------Selector-------------
 export const selectUser = (state) => state.user;

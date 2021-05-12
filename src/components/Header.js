@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from './../store/user';
 import { Box, Button } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -100,8 +101,10 @@ export default function PrimarySearchAppBar() {
     history.push(path);
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
+  const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleMobileMenuClose = () => {
@@ -111,13 +114,41 @@ export default function PrimarySearchAppBar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleLouOut = () => {
     dispatch(logOut());
     linkToSomewhere(`/`);
   };
-
   const menuId = 'primary-search-account-menu';
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          history.push('/users');
+        }}
+      >
+        کاربرها
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>محصولات</MenuItem>
+      <MenuItem onClick={handleMenuClose}>شفارشات</MenuItem>
+    </Menu>
+  );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -145,6 +176,20 @@ export default function PrimarySearchAppBar() {
         </IconButton>
         {userLoginInfo ? <p>{userLoginInfo.name}</p> : <p>ورود</p>}
       </MenuItem>
+
+      {userLoginInfo?.isAdmin && (
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            aria-label='account of current user'
+            aria-controls='primary-search-account-menu'
+            aria-haspopup='true'
+            color='inherit'
+          >
+            <SupervisorAccountIcon />
+          </IconButton>
+          <p>پنل مدیر</p>
+        </MenuItem>
+      )}
 
       <MenuItem
         onClick={() => {
@@ -218,6 +263,18 @@ export default function PrimarySearchAppBar() {
               </Badge>
             </IconButton>
 
+            {userLoginInfo?.isAdmin && (
+              <Button
+                className={classes.btn}
+                aria-controls={menuId}
+                color='inherit'
+                endIcon={<SupervisorAccountIcon />}
+                onClick={handleProfileMenuOpen}
+              >
+                پنل مدیر
+              </Button>
+            )}
+
             <Button
               className={classes.btn}
               aria-controls={menuId}
@@ -231,7 +288,7 @@ export default function PrimarySearchAppBar() {
                 }
               }}
             >
-              <Box mt={0.7}>{userLoginInfo ? userLoginInfo.name : 'Login'}</Box>
+              <Box mt={0}>{userLoginInfo ? userLoginInfo.name : 'ورود'}</Box>
             </Button>
           </div>
           <div className={classes.sectionMobile}>
@@ -248,7 +305,7 @@ export default function PrimarySearchAppBar() {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {/* {renderMenu} */}
+      {renderMenu}
     </div>
   );
 }
