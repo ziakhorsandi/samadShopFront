@@ -75,7 +75,12 @@ const ProfileScreen = ({ location }) => {
                           <TableCell align='center'>{user.name}</TableCell>
                           <TableCell align='center'>{user.email}</TableCell>
                           <TableCell align='center'>
-                            <IconButton size='small'>
+                            <IconButton
+                              size='small'
+                              onClick={() => {
+                                history.push(`/admin/users/${user._id}/edit`);
+                              }}
+                            >
                               <Box color={'primary.main'}>
                                 <EditIcon fontSize='inherit' />
                               </Box>

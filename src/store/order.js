@@ -3,13 +3,26 @@ import { apiCallBegan } from './api';
 import { createHeader } from './../publicFuncs';
 
 const slice = createSlice({
-  name: 'user',
+  name: 'order',
   initialState: {
     detail: {},
     allOrders: [],
     success: false,
+    message: '',
+    error: '',
+    loading: false,
   },
   reducers: {
+    publicRequested: (order) => {
+      order.error = '';
+      order.message = '';
+      order.loading = true;
+    },
+    publicRequestFail: (order, action) => {
+      //Must change the error message here for specific use
+      order.error = action.payload;
+      order.loading = false;
+    },
     orderCreatedSuccess: (order, action) => {
       order.success = true;
       order.detail = action.payload;
@@ -25,6 +38,7 @@ const slice = createSlice({
     },
     allOrdersReceived: (order, action) => {
       order.allOrders = action.payload;
+      order.loading = false;
     },
     orderReset: (order) => {
       order.detail = {};
@@ -35,6 +49,8 @@ const slice = createSlice({
 });
 
 const {
+  publicRequested,
+  publicRequestFail,
   orderCreatedSuccess,
   orderCreatedFail,
   ordersReceived,
@@ -92,7 +108,9 @@ export const getAllOrders = () => (dispatch, getState) => {
       url,
       method: 'GET',
       headers: createHeader(token),
+      onStart: publicRequested.type,
       onSucess: allOrdersReceived.type,
+      onError: publicRequestFail.type,
     })
   );
 };

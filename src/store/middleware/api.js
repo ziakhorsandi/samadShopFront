@@ -17,6 +17,7 @@ const api =
       onError,
       headers,
       extraData,
+      successMessage,
     } = action.payload;
 
     if (onStart) dispatch({ type: onStart });
@@ -41,7 +42,7 @@ const api =
           extraData: extraData,
         });
       //General success action
-      dispatch(apiCallSuccess(response.data));
+      dispatch(apiCallSuccess(successMessage));
     } catch (error) {
       //For specific senarios error action
       if (onError) dispatch({ type: onError, payload: error.response.status });

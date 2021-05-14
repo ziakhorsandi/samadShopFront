@@ -6,7 +6,10 @@ const Loader = () => {
     <div style={{ height: '90%', display: 'grid', placeItems: 'center' }}>
       <CircularProgress
         color='primary'
-        style={{ width: '100px', height: '100px' }}
+        // style={{ width: '100px', height: '100px' }}
+        disableShrink
+        size={60}
+        thickness={2}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, selectUser } from './../store/user';
+import { login, selectUser, userErrReset } from './../store/user';
 import FormContaiter from './../components/FormContaiter';
 import Loader from './../components/Loader';
 import { Link } from 'react-router-dom';
@@ -19,12 +19,17 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
-import { selectApiValue } from './../store/api';
+import { apiReset, selectApiValue } from './../store/api';
 import { useHistory } from 'react-router';
 import Alert from '@material-ui/lab/Alert';
 
 import { validateEmail } from './../publicFuncs';
 import CheckoutSteps from '../components/CheckoutSteps';
+import {
+  EMAIL_ATLEAST_LENGTH,
+  EMAIL_FORMAT_NOT_VALID,
+  EMPTY_FIELD_EXIST,
+} from '../messages';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -60,22 +65,25 @@ const LoginScreen = ({ location }) => {
     if (userLoginInfo) {
       history.push(redirect);
     }
-    console.log(`redirect`, redirect);
-  }, [userLoginInfo, history, redirect]);
+    return () => {
+      dispatch(apiReset());
+      dispatch(userErrReset());
+    };
+  }, [dispatch, userLoginInfo, history, redirect]);
   const formSubmit = () => {
     if (email === '' || password === '') {
-      setEmailErr('وجود فیلد خالی');
+      setEmailErr(EMPTY_FIELD_EXIST);
       return;
     }
     if (!validateEmail(email)) {
-      setEmailErr('فرمت ایمیل نادرست است');
+      setEmailErr(EMAIL_FORMAT_NOT_VALID);
       return;
     } else {
       setEmailErr('');
     }
 
     if (password.length < 6) {
-      setPasswordErr('کلمه ی عبور باید بیشتر از 6 کاراکتر باشد');
+      setPasswordErr(EMAIL_ATLEAST_LENGTH);
       return;
     } else {
       setPasswordErr('');

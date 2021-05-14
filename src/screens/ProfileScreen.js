@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, getUserDetail, updateUserProfile } from './../store/user';
+import {
+  selectUser,
+  getUserDetail,
+  updateUserProfile,
+  userErrReset,
+} from './../store/user';
 import FormContaiter from './../components/FormContaiter';
 import Loader from './../components/Loader';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -8,6 +13,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   FormControl,
   FormGroup,
@@ -26,13 +32,22 @@ import {
 } from '@material-ui/core';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import { selectApiValue } from './../store/api';
+// import { selectApiValue } from './../store/api';
 import { useHistory } from 'react-router';
 import Alert from '@material-ui/lab/Alert';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 import { validateEmail } from './../publicFuncs';
 import { getAllOrders, selectOrder } from '../store/order';
+import {
+  EMAIL_ATLEAST_LENGTH,
+  EMAIL_CONFIRM_NOT_SAME,
+  EMAIL_FORMAT_NOT_VALID,
+  EMPTY_FIELD_EXIST,
+} from '../messages';
+
+import Skeleton from '@material-ui/lab/Skeleton';
+import { Message } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -47,9 +62,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProfileScreen = ({ location }) => {
-  const { loading } = useSelector(selectApiValue);
-  const { userDetail, userLoginInfo, error } = useSelector(selectUser);
-  const { allOrders } = useSelector(selectOrder);
+  // const { loading, error } = useSelector(selectApiValue);
+  const {
+    userDetail,
+    userLoginInfo,
+    message,
+    loading: loadingUser,
+    error: errorUser,
+  } = useSelector(selectUser);
+  const {
+    allOrders,
+    loading: loadingOrder,
+    error: errorOrder,
+  } = useSelector(selectOrder);
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -68,39 +93,45 @@ const ProfileScreen = ({ location }) => {
     if (!userLoginInfo) {
       history.push('/');
     } else {
-      if (!userDetail) {
-        dispatch(getUserDetail());
+      if (!userDetail || userDetail._id !== userLoginInfo._id) {
+        dispatch(getUserDetail('profile'));
       } else {
         setName(userDetail.name);
         setEmail(userDetail.email);
       }
-      dispatch(getAllOrders());
+      // dispatch(getAllOrders());
     }
   }, [dispatch, userLoginInfo, userDetail, history]);
+  useEffect(() => {
+    dispatch(getAllOrders());
+    return () => {
+      dispatch(userErrReset());
+    };
+  }, [dispatch]);
 
   const formSubmit = () => {
     if (email === '' || password === '' || name === '') {
-      setNameErr('وجود فیلد خالی');
+      setNameErr(EMPTY_FIELD_EXIST);
       return;
     } else {
       setNameErr('');
     }
     if (!validateEmail(email)) {
-      setEmailErr('فرمت ایمیل نادرست است');
+      setEmailErr(EMAIL_FORMAT_NOT_VALID);
       return;
     } else {
       setEmailErr('');
     }
 
     if (password.length < 6) {
-      setPasswordErr('کلمه ی عبور باید بیشتر از 6 کاراکتر باشد');
+      setPasswordErr(EMAIL_ATLEAST_LENGTH);
       return;
     } else {
       setPasswordErr('');
     }
 
     if (password !== confirmPassword) {
-      setPasswordErr('کلمه های عبور با هم تطابق ندارند');
+      setPasswordErr(EMAIL_CONFIRM_NOT_SAME);
       return;
     } else {
       setPasswordErr('');
@@ -110,18 +141,28 @@ const ProfileScreen = ({ location }) => {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
-          <Container>
-            <FormContaiter>
-              <FormGroup>
-                <Typography gutterBottom variant='h6'>
-                  پروفایل شخصی
-                </Typography>
-                {error && <Alert severity='error'>{error}</Alert>}
-                {nameErr && <Alert severity='error'>{nameErr}</Alert>}
+      <Container>
+        <FormContaiter>
+          <FormGroup>
+            <Typography gutterBottom variant='h6'>
+              پروفایل شخصی
+            </Typography>
+            {message && <Alert severity='success'>{message}</Alert>}
+            {errorUser && <Alert severity='error'>{errorUser}</Alert>}
+            {nameErr && <Alert severity='error'>{nameErr}</Alert>}
+            {loadingUser ? (
+              <>
+                <Skeleton animation={false} height={50} />
+                <Skeleton animation='wave' />
+                <Skeleton animation={false} height={50} />
+                <Skeleton animation='wave' />
+                <Skeleton animation={false} height={50} />
+                <Skeleton animation='wave' />
+                <Skeleton animation={false} height={50} />
+                <Skeleton animation='wave' />
+              </>
+            ) : (
+              <>
                 <FormControl className={classes.input}>
                   <InputLabel htmlFor='name'>نام کاربری</InputLabel>
                   <Input
@@ -202,17 +243,32 @@ const ProfileScreen = ({ location }) => {
                     }
                   />
                 </FormControl>
-                <FormControl className={classes.btn}>
-                  <Button
-                    variant='outlined'
-                    color='primary'
-                    onClick={formSubmit}
-                  >
-                    به روز رسانی
-                  </Button>
-                </FormControl>
-              </FormGroup>
-            </FormContaiter>
+              </>
+            )}
+            <FormControl className={classes.btn}>
+              {loadingUser ? (
+                <Button
+                  variant='outlined'
+                  color='primary'
+                  onClick={formSubmit}
+                  disabled={true}
+                >
+                  <CircularProgress disableShrink size={30} thickness={1} />
+                </Button>
+              ) : (
+                <Button variant='outlined' color='primary' onClick={formSubmit}>
+                  به روز رسانی
+                </Button>
+              )}
+            </FormControl>
+          </FormGroup>
+        </FormContaiter>
+        {loadingOrder ? (
+          <Loader />
+        ) : errorOrder ? (
+          <Message msg={errorOrder} />
+        ) : (
+          <>
             {allOrders[0] && (
               <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label='simple table'>
@@ -274,9 +330,9 @@ const ProfileScreen = ({ location }) => {
                 </Table>
               </TableContainer>
             )}
-          </Container>
-        </>
-      )}
+          </>
+        )}
+      </Container>
     </>
   );
 };

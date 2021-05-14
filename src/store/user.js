@@ -3,6 +3,7 @@ import { apiCallBegan } from './api';
 import { createHeader } from './../publicFuncs';
 import { shippingAddressRemoved } from './cart';
 import { orderReset } from './order';
+import { UPDATE_SUCCESS_MSG } from '../messages';
 
 const userLoginInfoFromlocalStorage = localStorage.getItem('userLoginInfo')
   ? JSON.parse(localStorage.getItem('userLoginInfo'))
@@ -15,19 +16,33 @@ const slice = createSlice({
     userDetail: null,
     userList: [],
     error: '',
+    message: '',
+    loading: false,
   },
   reducers: {
+    userErrorReset: (user) => {
+      user.error = '';
+      user.message = '';
+    },
     userLogedinSuccess: (user, action) => {
       user.userLoginInfo = action.payload;
       localStorage.setItem('userLoginInfo', JSON.stringify(user.userLoginInfo));
+      user.loading = false;
     },
-    loginRequestFail: (user, action) => {
+
+    publicRequested: (user) => {
+      user.error = '';
+      user.message = '';
+      user.loading = true;
+    },
+    publicRequestFail: (user, action) => {
       //Must change the error message here for specific use
       if (action.payload === 401 || action.payload === 400) {
         user.error = 'موارد معتبر نیست';
       } else {
         user.error = action.payload;
       }
+      user.loading = false;
     },
     userLogedOut: (user) => {
       user.userLoginInfo = null;
@@ -38,12 +53,16 @@ const slice = createSlice({
     // userRegisterdSuccess: (user) => {},
     userDetailRequestSuccess: (user, action) => {
       user.userDetail = action.payload;
+      user.loading = false;
     },
     userUpdatedSuccess: (user, action) => {
       user.userLoginInfo = action.payload;
       localStorage.setItem('userLoginInfo', JSON.stringify(user.userLoginInfo));
       const { _id, name, email, isAdmin } = action.payload;
       user.userDetail = { _id, name, email, isAdmin };
+
+      user.loading = false;
+      user.message = UPDATE_SUCCESS_MSG;
     },
     userListRequestSuccess: (users, action) => {
       users.userList = action.payload;
@@ -54,18 +73,28 @@ const slice = createSlice({
       );
       users.userList.splice(index, 1);
     },
+    userUpdateFromAdminSuccess: (user, action) => {
+      const { _id, name, email, isAdmin } = action.payload;
+      user.userDetail = { _id, name, email, isAdmin };
+
+      user.loading = false;
+      user.message = UPDATE_SUCCESS_MSG;
+    },
   },
 });
 
 const {
   userLogedinSuccess,
-  loginRequestFail,
   // userRegisterdSuccess,
   userDetailRequestSuccess,
   userUpdatedSuccess,
   userLogedOut,
   userListRequestSuccess,
   deleteUserSuccess,
+  userUpdateFromAdminSuccess,
+  publicRequested,
+  publicRequestFail,
+  userErrorReset,
 } = slice.actions;
 //-------------Action creators-----------
 export const login = (email, password) => (dispatch) => {
@@ -75,8 +104,9 @@ export const login = (email, password) => (dispatch) => {
       url,
       method: 'POST',
       headers: createHeader(),
+      onStart: publicRequested.type,
       onSucess: userLogedinSuccess.type,
-      onError: loginRequestFail.type,
+      onError: publicRequestFail.type,
       data: { email, password },
     })
   );
@@ -96,8 +126,9 @@ export const register = (name, email, password) => (dispatch) => {
       method: 'POST',
       headers: createHeader(),
       // onSucess: userRegisterdSuccess.type,
+      onStart: publicRequested.type,
       onSucess: userLogedinSuccess.type,
-      onError: loginRequestFail.type,
+      onError: publicRequestFail.type,
       data: { name, email, password },
     })
   );
@@ -105,13 +136,15 @@ export const register = (name, email, password) => (dispatch) => {
 
 export const getUserDetail = (id) => (dispatch, getState) => {
   const { token } = getState().user.userLoginInfo;
-  const url = '/users/profile';
+  const url = `/users/${id}`;
   return dispatch(
     apiCallBegan({
       url,
       method: 'GET',
       headers: createHeader(token),
+      onStart: publicRequested.type,
       onSucess: userDetailRequestSuccess.type,
+      onError: publicRequestFail.type,
     })
   );
 };
@@ -124,7 +157,9 @@ export const updateUserProfile =
         url,
         method: 'PUT',
         headers: createHeader(token),
+        onStart: publicRequested.type,
         onSucess: userUpdatedSuccess.type,
+        onError: publicRequestFail.type,
         data: {
           name,
           email,
@@ -157,6 +192,26 @@ export const deleteUser = (id) => (dispatch, getState) => {
       extraData: id,
     })
   );
+};
+
+export const updateUser = (user) => (dispatch, getState) => {
+  const { token } = getState().user.userLoginInfo;
+  const url = `/users/${user._id}`;
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'PUT',
+      headers: createHeader(token),
+      onStart: publicRequested.type,
+      onSucess: userUpdateFromAdminSuccess.type,
+      onError: publicRequestFail.type,
+      data: user,
+    })
+  );
+};
+
+export const userErrReset = () => {
+  return { type: userErrorReset.type };
 };
 
 //--------------Selector-------------
