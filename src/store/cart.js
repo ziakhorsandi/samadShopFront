@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-// import { createSelector } from 'reselect';
-// import * as apiActions from './api';
-import { loadProduct } from './detailProduct';
+import { loadProductDetail } from './products';
 
 const cartItemsFromlocalStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
@@ -50,12 +48,8 @@ const slice = createSlice({
   },
 });
 
-const {
-  itemAdded,
-  itemDeleted,
-  shippingAddressAdded,
-  paymentMethodAdded,
-} = slice.actions;
+const { itemAdded, itemDeleted, shippingAddressAdded, paymentMethodAdded } =
+  slice.actions;
 
 export const { shippingAddressRemoved } = slice.actions;
 //-------------Action creators-----------
@@ -65,12 +59,12 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
 
   if (product._id && id) {
     if (product._id !== id) {
-      await dispatch(loadProduct(id));
-      product = getState().entities.detailProduct.list;
+      await dispatch(loadProductDetail(id));
+      product = getState().entities.products.detail;
     }
   } else {
-    await dispatch(loadProduct(id));
-    product = getState().entities.detailProduct.list;
+    await dispatch(loadProductDetail(id));
+    product = getState().entities.products.detail;
   }
   const { name, price, countInStock, brand, image } = product;
   let item = { id: product._id, name, price, countInStock, brand, image, qty };

@@ -45,7 +45,11 @@ const api =
       dispatch(apiCallSuccess(successMessage));
     } catch (error) {
       //For specific senarios error action
-      if (onError) dispatch({ type: onError, payload: error.response.status });
+      if (onError) {
+        dispatch({ type: onError, payload: error.response.status });
+        console.error(`Error Message`, error.response.data.message);
+        console.error(`Error Stack`, error.response.data.stack);
+      }
       //General error action
       dispatch(apiCallFailed(error.message));
     }

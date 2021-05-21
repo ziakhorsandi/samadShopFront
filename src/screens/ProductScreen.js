@@ -18,7 +18,7 @@ import Raiting from './../components/Raiting';
 import AddShoppingCartOutlinedIcon from '@material-ui/icons/AddShoppingCartOutlined';
 import BackIcon from '@material-ui/icons/ArrowBackRounded';
 import { useHistory } from 'react-router-dom';
-import { loadProduct, selectDetailProduct } from './../store/detailProduct';
+import { loadProductDetail, selectAllProducts } from './../store/products';
 import { selectApiValue } from './../store/api';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './../components/Loader';
@@ -41,13 +41,13 @@ const useStyles = makeStyles((theme) => ({
 
 const ProductScreen = ({ match }) => {
   const dispatch = useDispatch();
-  const { list: product } = useSelector(selectDetailProduct);
+  const { detail: product } = useSelector(selectAllProducts);
   const { loading, error } = useSelector(selectApiValue);
   const classes = useStyles();
   const history = useHistory();
   const [qty, setQty] = useState(1);
   useEffect(() => {
-    dispatch(loadProduct(match.params.id));
+    dispatch(loadProductDetail(match.params.id));
   }, [dispatch, match]);
   return (
     <>

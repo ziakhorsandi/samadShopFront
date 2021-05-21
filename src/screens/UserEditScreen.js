@@ -60,6 +60,7 @@ const UserEditScreen = ({ match }) => {
   const [nameErr, setNameErr] = useState('');
 
   useEffect(() => {
+    console.log('userEditScreen');
     if (!userLoginInfo) {
       history.push('/');
     } else {
@@ -80,6 +81,7 @@ const UserEditScreen = ({ match }) => {
   }, [dispatch]);
 
   const formSubmit = () => {
+    dispatch(userErrReset());
     if (email === '' || name === '') {
       setNameErr(EMPTY_FIELD_EXIST);
       return;

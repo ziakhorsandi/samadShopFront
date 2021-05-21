@@ -140,13 +140,27 @@ export default function PrimarySearchAppBar() {
       <MenuItem
         onClick={() => {
           handleMenuClose();
-          history.push('/users');
+          history.push('/admin/users');
         }}
       >
         کاربرها
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>محصولات</MenuItem>
-      <MenuItem onClick={handleMenuClose}>شفارشات</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          history.push('/admin/productlist');
+        }}
+      >
+        محصولات
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          history.push('/admin/orderlist');
+        }}
+      >
+        شفارشات
+      </MenuItem>
     </Menu>
   );
 

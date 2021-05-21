@@ -2,8 +2,12 @@ import React, { useEffect } from 'react';
 import { selectApiValue } from './../store/api';
 import Loader from './../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectOrder, getOrderById, payOrder } from './../store/order';
-import { useHistory } from 'react-router-dom';
+import {
+  selectOrder,
+  getOrderById,
+  payOrder,
+  orderReset,
+} from './../store/order';
 import { selectPaymentMethod, selectShippingAddress } from '../store/cart';
 import {
   Box,
@@ -49,8 +53,6 @@ const PlaceorderScreen = ({ match }) => {
   const classes = useStyles();
   const shipAdd = useSelector(selectShippingAddress);
   const payMeth = useSelector(selectPaymentMethod);
-  // const cartItems = useSelector(selectCart);
-  const history = useHistory();
   const dispatch = useDispatch();
   const { success, detail: order } = useSelector(selectOrder);
   const orderId = match.params.id;
@@ -72,6 +74,9 @@ const PlaceorderScreen = ({ match }) => {
     if (!success) {
       dispatch(getOrderById(orderId));
     }
+    return () => {
+      dispatch(orderReset());
+    };
   }, [orderId, dispatch, success]);
 
   const formSubmit = () => {

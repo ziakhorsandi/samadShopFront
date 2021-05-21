@@ -110,6 +110,7 @@ const ProfileScreen = ({ location }) => {
   }, [dispatch]);
 
   const formSubmit = () => {
+    dispatch(userErrReset());
     if (email === '' || password === '' || name === '') {
       setNameErr(EMPTY_FIELD_EXIST);
       return;

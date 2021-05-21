@@ -5,6 +5,12 @@ import api from './middleware/api';
 export default function setStore() {
   return configureStore({
     reducer,
-    middleware: [...getDefaultMiddleware(), api],
+    // middleware: [...getDefaultMiddleware(), api],
+    middleware: [
+      ...getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+      api,
+    ],
   });
 }

@@ -2,14 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const slice = createSlice({
   name: 'api',
-  initialState: { loading: false, error: '' },
+  initialState: { loading: false, error: '', message: '' },
   reducers: {
     apiCallBegan: (api) => {
       api.loading = true;
       api.error = '';
+      api.message = '';
     },
     apiCallSuccess: (api, action) => {
       api.loading = false;
+      api.message = action.payload;
     },
     apiCallFailed: (api, action) => {
       api.loading = false;
@@ -18,6 +20,7 @@ const slice = createSlice({
     apiReset: (api) => {
       api.loading = false;
       api.error = '';
+      api.message = '';
     },
   },
 });
