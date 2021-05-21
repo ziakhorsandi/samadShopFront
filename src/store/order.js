@@ -30,10 +30,7 @@ const slice = createSlice({
     orderCreatedFail: (order, action) => {
       order.success = false;
     },
-    ordersReceived: (order, action) => {
-      order.detail = action.payload;
-    },
-    orderPayed: (order, action) => {
+    orderReceived: (order, action) => {
       order.detail = action.payload;
     },
     allOrdersReceived: (order, action) => {
@@ -53,8 +50,7 @@ const {
   publicRequestFail,
   orderCreatedSuccess,
   orderCreatedFail,
-  ordersReceived,
-  orderPayed,
+  orderReceived,
   allOrdersReceived,
 } = slice.actions;
 export const { orderReset } = slice.actions;
@@ -82,7 +78,7 @@ export const getOrderById = (id) => (dispatch, getState) => {
       url,
       method: 'GET',
       headers: createHeader(token),
-      onSucess: ordersReceived.type,
+      onSucess: orderReceived.type,
     })
   );
 };
@@ -95,11 +91,25 @@ export const payOrder = (id, paymentResult) => (dispatch, getState) => {
       url,
       method: 'PUT',
       headers: createHeader(token),
-      onSucess: orderPayed.type,
+      onSucess: orderReceived.type,
       data: paymentResult,
     })
   );
 };
+
+export const deliverOrder = (id) => (dispatch, getState) => {
+  const url = `/orders/${id}/deliver`;
+  const { token } = getState().user.userLoginInfo;
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'PUT',
+      headers: createHeader(token),
+      onSucess: orderReceived.type,
+    })
+  );
+};
+
 export const getAllOrders = () => (dispatch, getState) => {
   const url = `/orders/myorders`;
   const { token } = getState().user.userLoginInfo;
@@ -111,6 +121,18 @@ export const getAllOrders = () => (dispatch, getState) => {
       onStart: publicRequested.type,
       onSucess: allOrdersReceived.type,
       onError: publicRequestFail.type,
+    })
+  );
+};
+export const getAllOrdersFromAllUsers = () => (dispatch, getState) => {
+  const url = `/orders`;
+  const { token } = getState().user.userLoginInfo;
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'GET',
+      headers: createHeader(token),
+      onSucess: allOrdersReceived.type,
     })
   );
 };

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router';
 import { selectApiValue } from './../store/api';
+import { selectUser } from '../store/user';
 import Loader from './../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,7 +9,9 @@ import {
   getOrderById,
   payOrder,
   orderReset,
+  deliverOrder,
 } from './../store/order';
+
 import { selectPaymentMethod, selectShippingAddress } from '../store/cart';
 import {
   Box,
@@ -56,6 +60,8 @@ const PlaceorderScreen = ({ match }) => {
   const dispatch = useDispatch();
   const { success, detail: order } = useSelector(selectOrder);
   const orderId = match.params.id;
+  const { userLoginInfo } = useSelector(selectUser);
+  const history = useHistory();
 
   const {
     shippingPrice,
@@ -64,6 +70,8 @@ const PlaceorderScreen = ({ match }) => {
     isPaid,
     isDelivered,
     orderItems,
+    paidAt,
+    deliveredAt,
   } = order;
   const itemsPrice = orderItems?.reduce(
     (acc, item) => acc + item.price * item.qty,
@@ -71,16 +79,23 @@ const PlaceorderScreen = ({ match }) => {
   );
 
   useEffect(() => {
-    if (!success) {
-      dispatch(getOrderById(orderId));
+    if (!userLoginInfo) {
+      history.push('/');
+    } else {
+      if (!success) {
+        dispatch(getOrderById(orderId));
+      }
     }
     return () => {
       dispatch(orderReset());
     };
-  }, [orderId, dispatch, success]);
+  }, [orderId, dispatch, success, history, userLoginInfo]);
 
-  const formSubmit = () => {
+  const paySubmit = () => {
     dispatch(payOrder(orderId, { msg: 'This order is payed' }));
+  };
+  const deliverSubmit = () => {
+    dispatch(deliverOrder(orderId));
   };
 
   return (
@@ -115,7 +130,10 @@ const PlaceorderScreen = ({ match }) => {
                     </Typography>
                   </Box>
                   {isDelivered ? (
-                    <Alert severity='error'>{'سفارش تحویل شده'}</Alert>
+                    <Alert severity='success'>
+                      {'تحویل شده در : '}
+                      <span>{paidAt.substring(0, 10)}</span>
+                    </Alert>
                   ) : (
                     <Alert severity='error'>{'سفارش در حال ارسال است'}</Alert>
                   )}
@@ -130,7 +148,10 @@ const PlaceorderScreen = ({ match }) => {
                     </Typography>
                   </Box>
                   {isPaid ? (
-                    <Alert severity='success'>{'پرداخت شده'}</Alert>
+                    <Alert severity='success'>
+                      {'پرداخت شده در : '}
+                      <span>{paidAt.substring(0, 10)}</span>
+                    </Alert>
                   ) : (
                     <Alert severity='error'>{'پرداخت صورت نگرفته'}</Alert>
                   )}
@@ -204,9 +225,21 @@ const PlaceorderScreen = ({ match }) => {
                           style={{ width: '100%' }}
                           variant='outlined'
                           color='primary'
-                          onClick={formSubmit}
+                          onClick={paySubmit}
                         >
                           پرداخت
+                        </Button>
+                      </ListItem>
+                    )}
+                    {!isDelivered && userLoginInfo?.isAdmin && (
+                      <ListItem>
+                        <Button
+                          style={{ width: '100%' }}
+                          variant='outlined'
+                          color='primary'
+                          onClick={deliverSubmit}
+                        >
+                          ارسال
                         </Button>
                       </ListItem>
                     )}

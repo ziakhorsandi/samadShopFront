@@ -55,7 +55,7 @@ export const { shippingAddressRemoved } = slice.actions;
 //-------------Action creators-----------
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
-  let product = getState().entities.detailProduct.list;
+  let product = getState().entities.products.detail;
 
   if (product._id && id) {
     if (product._id !== id) {

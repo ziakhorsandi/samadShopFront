@@ -17,6 +17,7 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditCreateScreen from './screens/ProductEditCreateScreen';
+import OrderListScreen from './screens/OrderListScreen';
 
 import PrivateRoute from './components/PrivateRoute';
 
@@ -53,7 +54,11 @@ function App() {
             admin
             component={ProductEditCreateScreen}
           />
-          {/* <PrivateRoute path='/admin/orderlist' admin component={} /> */}
+          <PrivateRoute
+            path='/admin/orderlist'
+            admin
+            component={OrderListScreen}
+          />
           <PrivateRoute
             path='/admin/productlist'
             admin

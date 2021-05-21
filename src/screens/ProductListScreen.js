@@ -57,9 +57,6 @@ const ProductListScreen = ({ location }) => {
     if (!userLoginInfo && !userLoginInfo.isAdmin) {
       history.push('/');
     } else {
-      // if (createSuccess) {
-      //   history.push(`/admin/products/${productDetail._id}/edit`);
-      // }
       dispatch(loadProducts());
     }
   }, [dispatch, userLoginInfo, history, productDetail, createSuccess]);
