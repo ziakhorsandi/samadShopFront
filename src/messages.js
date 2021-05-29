@@ -5,3 +5,4 @@ export const EMAIL_ATLEAST_LENGTH = 'کلمه ی عبور باید بیشتر ا
 export const EMAIL_CONFIRM_NOT_SAME = 'کلمه های عبور با هم تطابق ندارند';
 export const IMAGE_FORMAT_INCORRECT =
   'فقط فایل های با فرمت عکس قابلیت بارگزاری دارند';
+export const REVIEW_ADDED = 'نظر شما اعمال شد';

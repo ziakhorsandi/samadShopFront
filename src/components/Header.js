@@ -259,6 +259,14 @@ export default function PrimarySearchAppBar() {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
+              onChange={(e) => {
+                const keyword = e.target.value.trim();
+                if (keyword) {
+                  history.push(`/search/${e.target.value}`);
+                } else {
+                  history.push('/');
+                }
+              }}
             />
           </div>
           <div className={classes.grow} />

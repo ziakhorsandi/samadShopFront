@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { UPDATE_SUCCESS_MSG } from '../messages';
+import { REVIEW_ADDED, UPDATE_SUCCESS_MSG } from '../messages';
 import { createHeader } from '../publicFuncs';
 import { apiCallBegan } from './api';
 
@@ -19,8 +19,11 @@ const slice = createSlice({
       products.createSuccess = false;
     },
     productsReceived: (products, action) => {
-      products.list = action.payload;
+      products.list = action.payload.product;
+      products.page = action.payload.page;
+      products.pages = action.payload.pages;
     },
+
     productsCreated: (products, action) => {
       products.list.push(action.payload);
       products.detail = action.payload;
@@ -35,6 +38,9 @@ const slice = createSlice({
     productDetailReceived: (products, action) => {
       products.detail = action.payload;
     },
+    reviewAddedSuccess: (products, action) => {
+      products.detail = action.payload;
+    },
   },
 });
 
@@ -44,13 +50,14 @@ const {
   productDeletedSuccess,
   productDetailReceived,
   updateProductSuccess,
+  reviewAddedSuccess,
 } = slice.actions;
 export const { productReset } = slice.actions;
 
 //-------------Action creators-----------
 
-export const loadProducts = () => {
-  const url = '/products';
+export const loadProducts = (keyword = '', pageNumber = '') => {
+  const url = `/products?keyword=${keyword}&pageNumber=${pageNumber}`;
   return apiCallBegan({
     url,
     onSucess: productsReceived.type,
@@ -78,16 +85,23 @@ export const deleteProduct = (id) => (dispatch, getState) => {
   );
 };
 
-export const getProductById = (id) => (dispatch) => {
+export const getProductById = (id) => {
   const url = `/products/${id}`;
-  return dispatch(
-    apiCallBegan({
-      url,
-      method: 'GET',
-      headers: createHeader(),
-      onSucess: productDetailReceived.type,
-    })
-  );
+  return apiCallBegan({
+    url,
+    method: 'GET',
+    headers: createHeader(),
+    onSucess: productDetailReceived.type,
+  });
+};
+export const getTopRatedProducts = () => {
+  const url = `/products/top`;
+  return apiCallBegan({
+    url,
+    method: 'GET',
+    headers: createHeader(),
+    onSucess: productDetailReceived.type,
+  });
 };
 
 export const createProduct = (data) => (dispatch, getState) => {
@@ -114,6 +128,20 @@ export const updateProduct = (id, data) => (dispatch, getState) => {
       headers: createHeader(token, true),
       onSucess: updateProductSuccess.type,
       successMessage: UPDATE_SUCCESS_MSG,
+      data,
+    })
+  );
+};
+export const setReview = (id, data) => (dispatch, getState) => {
+  const { token } = getState().user.userLoginInfo;
+  const url = `/products/${id}/reviews`;
+  return dispatch(
+    apiCallBegan({
+      url,
+      method: 'POST',
+      headers: createHeader(token),
+      onSucess: reviewAddedSuccess.type,
+      successMessage: REVIEW_ADDED,
       data,
     })
   );

@@ -27,7 +27,6 @@ function App() {
       <Router>
         <Header />
         <Switch>
-          <Route exact path='/' component={HomeScreen} />
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/shopcart/:id?' component={CartScreen} />
           <Route path='/users/login' component={LoginScreen} />
@@ -60,10 +59,25 @@ function App() {
             component={OrderListScreen}
           />
           <PrivateRoute
+            exact
             path='/admin/productlist'
             admin
             component={ProductListScreen}
           />
+          <PrivateRoute
+            exact
+            path='/admin/productlist/:pageNumber'
+            admin
+            component={ProductListScreen}
+          />
+          <Route exact path='/search/:keyword' component={HomeScreen} />
+          <Route
+            exact
+            path='/search/:keyword/page/:pageNumber'
+            component={HomeScreen}
+          />
+          <Route exact path='/page/:pageNumber' component={HomeScreen} />
+          <Route exact path='/' component={HomeScreen} />
         </Switch>
       </Router>
     </Provider>

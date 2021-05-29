@@ -5,14 +5,15 @@ import {
   selectAllProducts,
   loadProducts,
   deleteProduct,
-  createProduct,
 } from './../store/products';
 import Loader from './../components/Loader';
+import { Pagination, PaginationItem } from '@material-ui/lab';
 
 import {
   Box,
   Button,
   Container,
+  Grid,
   IconButton,
   makeStyles,
   Paper,
@@ -40,12 +41,14 @@ const useStyles = makeStyles((theme) => ({
   editColor: {},
 }));
 
-const ProductListScreen = ({ location }) => {
+const ProductListScreen = ({ match }) => {
+  const pageNumber = match.params.pageNumber || 1;
   const { loading, error } = useSelector(selectApiValue);
   const {
     list: productList,
-    createSuccess,
     detail: productDetail,
+    page,
+    pages,
   } = useSelector(selectAllProducts);
   const { userLoginInfo } = useSelector(selectUser);
 
@@ -57,9 +60,9 @@ const ProductListScreen = ({ location }) => {
     if (!userLoginInfo && !userLoginInfo.isAdmin) {
       history.push('/');
     } else {
-      dispatch(loadProducts());
+      dispatch(loadProducts('', pageNumber));
     }
-  }, [dispatch, userLoginInfo, history, productDetail, createSuccess]);
+  }, [dispatch, userLoginInfo, history, productDetail, pageNumber]);
 
   return (
     <>
@@ -144,6 +147,29 @@ const ProductListScreen = ({ location }) => {
                 </TableContainer>
               )}
             </Box>
+            <Grid
+              container
+              direction='row'
+              justify='center'
+              alignItems='center'
+            >
+              {pages !== 1 && (
+                <Pagination
+                  page={page}
+                  count={pages}
+                  variant='outlined'
+                  shape='rounded'
+                  renderItem={(item) => (
+                    <PaginationItem
+                      {...item}
+                      onClick={() => {
+                        history.push(`/admin/productlist/${item.page}`);
+                      }}
+                    />
+                  )}
+                />
+              )}
+            </Grid>
           </Container>
         </>
       )}
