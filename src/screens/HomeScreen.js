@@ -5,11 +5,17 @@ import Message from './../components/Message';
 import Product from '../components/Product';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadProducts, selectAllProducts } from '../store/products';
+import {
+  getTopRatedProducts,
+  loadProducts,
+  selectAllProducts,
+} from '../store/products';
 import { selectApiValue } from '../store/api';
 
 import { Pagination, PaginationItem } from '@material-ui/lab';
 import { useHistory } from 'react-router';
+import ProductCarousel from '../components/ProductCarousel';
+import Meta from './../components/Meta';
 
 const useStyles = makeStyles({
   gridItem: {
@@ -27,11 +33,18 @@ const HomeScreen = ({ match }) => {
   const { loading, error } = useSelector(selectApiValue);
   const history = useHistory();
   useEffect(() => {
-    dispatch(loadProducts(keyword, pageNumber));
+    async function waitForMe() {
+      if (!keyword) {
+        await dispatch(getTopRatedProducts());
+      }
+      dispatch(loadProducts(keyword, pageNumber));
+    }
+    waitForMe();
   }, [dispatch, keyword, pageNumber]);
 
   return (
     <>
+      <Meta />
       {loading ? (
         <Loader />
       ) : error ? (
@@ -39,56 +52,68 @@ const HomeScreen = ({ match }) => {
       ) : (
         <Container maxWidth='xl'>
           <Box fontWeight={900} my={4}>
-            <Typography component='h1' variant='h6' color='primary'>
-              جدید ترین محصولات :
-            </Typography>
-          </Box>
-          <Grid container spacing={3}>
-            {list.length === 0 ? (
-              <Typography component='h1' variant='h6' color='secondary'>
-                موردی یافت نشد
-              </Typography>
-            ) : (
-              list.map((product) => (
-                <Grid
-                  key={product._id}
-                  className={classes.gridItem}
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  xl={2}
-                >
-                  <Product product={product} />
+            {!keyword && (
+              <>
+                <Typography component='h1' variant='h6' color='primary'>
+                  محصولات با بیشترین امتیاز :
+                </Typography>
+                <Grid container justify='center'>
+                  <ProductCarousel />
                 </Grid>
-              ))
+                <Typography component='h1' variant='h6' color='primary'>
+                  جدید ترین محصولات :
+                </Typography>
+              </>
             )}
-            <Grid
-              container
-              direction='row'
-              justify='center'
-              alignItems='center'
-              item
-            >
-              {pages !== 1 && (
-                <Pagination
-                  page={page}
-                  count={pages}
-                  variant='outlined'
-                  shape='rounded'
-                  renderItem={(item) => (
-                    <PaginationItem
-                      {...item}
-                      onClick={() => {
-                        history.push(`/page/${item.page}`);
-                      }}
+          </Box>
+          {!loading && list.length === 0 ? (
+            <Message msg='موردی یافت نشد' />
+          ) : (
+            <>
+              <Grid container spacing={3}>
+                {list.map((product) => (
+                  <Grid
+                    key={product._id}
+                    className={classes.gridItem}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    xl={2}
+                  >
+                    <Product product={product} />
+                  </Grid>
+                ))}
+              </Grid>
+              <Grid
+                container
+                direction='row'
+                justify='center'
+                alignItems='center'
+                item
+              >
+                {pages && page && pages !== 1 && (
+                  <Box my={2}>
+                    <Pagination
+                      page={page}
+                      count={pages}
+                      variant='outlined'
+                      shape='rounded'
+                      renderItem={(item) => (
+                        <PaginationItem
+                          {...item}
+                          onClick={() => {
+                            history.push(`/page/${item.page}`);
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
-              )}
-            </Grid>
-          </Grid>
+                  </Box>
+                )}
+              </Grid>
+            </>
+          )}
         </Container>
       )}
     </>

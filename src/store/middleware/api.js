@@ -51,7 +51,8 @@ const api =
         console.error(`Error Stack`, error.response.data.stack);
       }
       //General error action
-      dispatch(apiCallFailed(error.message));
+      // dispatch(apiCallFailed(error.message));
+      dispatch(apiCallFailed(error.response.data.stack));
     }
   };
 export default api;

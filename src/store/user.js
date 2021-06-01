@@ -13,7 +13,7 @@ const slice = createSlice({
   name: 'user',
   initialState: {
     userLoginInfo: userLoginInfoFromlocalStorage,
-    userDetail: null,
+    userDetail: {},
     userList: [],
     error: '',
     message: '',
@@ -80,6 +80,9 @@ const slice = createSlice({
       user.loading = false;
       user.message = UPDATE_SUCCESS_MSG;
     },
+    userDetailReset: (user, action) => {
+      user.userDetail = {};
+    },
   },
 });
 
@@ -96,6 +99,7 @@ const {
   publicRequestFail,
   userErrorReset,
 } = slice.actions;
+export const { userDetailReset } = slice.actions;
 //-------------Action creators-----------
 export const login = (email, password) => (dispatch) => {
   const url = '/users/login';

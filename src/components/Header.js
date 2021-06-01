@@ -20,6 +20,7 @@ import { logOut } from './../store/user';
 import { Box, Button } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import { selectCart } from '../store/cart';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -96,6 +97,7 @@ export default function PrimarySearchAppBar() {
   const classes = useStyles();
   const history = useHistory();
   const { userLoginInfo } = useSelector(selectUser);
+  const cartItems = useSelector(selectCart);
   const dispatch = useDispatch();
   const linkToSomewhere = (path) => {
     history.push(path);
@@ -212,7 +214,7 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <IconButton aria-label='show 4 new mails' color='inherit'>
-          <Badge badgeContent={4} color='secondary'>
+          <Badge badgeContent={cartItems.length} color='secondary'>
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
@@ -260,12 +262,14 @@ export default function PrimarySearchAppBar() {
               }}
               inputProps={{ 'aria-label': 'search' }}
               onChange={(e) => {
-                const keyword = e.target.value.trim();
-                if (keyword) {
-                  history.push(`/search/${e.target.value}`);
-                } else {
-                  history.push('/');
-                }
+                setTimeout(() => {
+                  const keyword = e.target.value.trim();
+                  if (keyword) {
+                    history.push(`/search/${e.target.value}`);
+                  } else {
+                    history.push('/');
+                  }
+                }, 1000);
               }}
             />
           </div>
@@ -280,7 +284,7 @@ export default function PrimarySearchAppBar() {
               color='inherit'
               onClick={() => linkToSomewhere(`/shopcart`)}
             >
-              <Badge badgeContent={4} color='secondary'>
+              <Badge badgeContent={cartItems.length} color='secondary'>
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>

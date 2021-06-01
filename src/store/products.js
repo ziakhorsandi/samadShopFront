@@ -7,6 +7,7 @@ const slice = createSlice({
   name: 'products',
   initialState: {
     list: [],
+    topRated: [],
     detail: {},
     createSuccess: false,
   },
@@ -41,6 +42,9 @@ const slice = createSlice({
     reviewAddedSuccess: (products, action) => {
       products.detail = action.payload;
     },
+    topRatedRecieved: (products, action) => {
+      products.topRated = action.payload;
+    },
   },
 });
 
@@ -51,6 +55,7 @@ const {
   productDetailReceived,
   updateProductSuccess,
   reviewAddedSuccess,
+  topRatedRecieved,
 } = slice.actions;
 export const { productReset } = slice.actions;
 
@@ -100,7 +105,7 @@ export const getTopRatedProducts = () => {
     url,
     method: 'GET',
     headers: createHeader(),
-    onSucess: productDetailReceived.type,
+    onSucess: topRatedRecieved.type,
   });
 };
 

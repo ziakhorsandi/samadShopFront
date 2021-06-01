@@ -71,7 +71,6 @@ const PlaceorderScreen = ({ match }) => {
     isDelivered,
     orderItems,
     paidAt,
-    deliveredAt,
   } = order;
   const itemsPrice = orderItems?.reduce(
     (acc, item) => acc + item.price * item.qty,

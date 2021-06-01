@@ -5,6 +5,7 @@ import {
   getUserDetail,
   updateUserProfile,
   userErrReset,
+  userDetailReset,
 } from './../store/user';
 import FormContaiter from './../components/FormContaiter';
 import Loader from './../components/Loader';
@@ -48,6 +49,7 @@ import {
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Message } from '@material-ui/icons';
+import Meta from './../components/Meta';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -90,21 +92,26 @@ const ProfileScreen = ({ location }) => {
   const [nameErr, setNameErr] = useState('');
 
   useEffect(() => {
-    if (!userLoginInfo) {
-      history.push('/');
-    } else {
-      if (!userDetail || userDetail._id !== userLoginInfo._id) {
-        dispatch(getUserDetail('profile'));
+    async function waitForMe() {
+      if (!userLoginInfo) {
+        history.push('/');
       } else {
-        setName(userDetail.name);
-        setEmail(userDetail.email);
+        // if (!userDetail || userDetail._id !== userLoginInfo._id) {
+        if (userDetail && userDetail._id === userLoginInfo._id) {
+          setName(userDetail.name);
+          setEmail(userDetail.email);
+        } else {
+          await dispatch(getUserDetail('profile'));
+          dispatch(getAllOrders());
+        }
       }
-      // dispatch(getAllOrders());
     }
+    waitForMe();
   }, [dispatch, userLoginInfo, userDetail, history]);
   useEffect(() => {
-    dispatch(getAllOrders());
+    // dispatch(getAllOrders());
     return () => {
+      dispatch(userDetailReset());
       dispatch(userErrReset());
     };
   }, [dispatch]);
@@ -142,6 +149,7 @@ const ProfileScreen = ({ location }) => {
 
   return (
     <>
+      <Meta title='Profile' />
       <Container>
         <FormContaiter>
           <FormGroup>

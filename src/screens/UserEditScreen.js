@@ -60,14 +60,12 @@ const UserEditScreen = ({ match }) => {
   const [nameErr, setNameErr] = useState('');
 
   useEffect(() => {
-    console.log('userEditScreen');
     if (!userLoginInfo) {
       history.push('/');
     } else {
       if (!userDetail || userDetail._id !== userId) {
         dispatch(getUserDetail(userId));
       } else {
-        console.log(`userDetail`, userDetail);
         setName(userDetail.name);
         setEmail(userDetail.email);
         setIsAdminCheck(userDetail.isAdmin);

@@ -33,7 +33,7 @@ import {
 } from '../store/products';
 import { EMPTY_FIELD_EXIST, IMAGE_FORMAT_INCORRECT } from '../messages';
 import imgPlaceHoledr from './../assets/images/placeholder-image.png';
-import { dataURItoBlob } from '../publicFuncs';
+// import { dataURItoBlob } from '../publicFuncs';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -102,7 +102,6 @@ const ProductEditCreateScreen = ({ match }) => {
     }
     // return () => {
     //   dispatch(productErrReset());
-    //   console.log('out');
     // };
     // eslint-disable-next-line
   }, [
@@ -117,7 +116,6 @@ const ProductEditCreateScreen = ({ match }) => {
     return () => {
       dispatch(apiReset());
       dispatch(productReset());
-      console.log('out');
     };
   }, [dispatch]);
 

@@ -47,6 +47,10 @@ const CartScreen = ({ match, location }) => {
       dispatch(addToCart(match.params.id, qty));
     }
   }, [dispatch, match, qty, productId]);
+
+  const goToShipping = () => {
+    history.push('/shipping');
+  };
   return (
     <Box py={5}>
       <Container maxWidth='lg'>
@@ -138,15 +142,24 @@ const CartScreen = ({ match, location }) => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={() => {
-                    history.push('/shipping');
-                  }}
-                >
-                  تصویه
-                </Button>
+                {cartItems.length === 0 ? (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={goToShipping}
+                    disabled
+                  >
+                    تصویه
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={goToShipping}
+                  >
+                    تصویه
+                  </Button>
+                )}
               </CardActions>
             </Card>
           </Grid>

@@ -35,6 +35,7 @@ import Rating from '@material-ui/lab/Rating';
 import StarIcon from '@material-ui/icons/StarRounded';
 import Alert from '@material-ui/lab/Alert';
 import { EMPTY_FIELD_EXIST } from '../messages';
+import Meta from './../components/Meta';
 
 const labels = {
   0.5: 'کاملا به درد نخور',
@@ -101,6 +102,7 @@ const ProductScreen = ({ match }) => {
         <Message msg={error} />
       ) : (
         <Container maxWidth='lg'>
+          <Meta title={product?.name} />
           <Box my={2}>
             <Button
               variant='outlined'
