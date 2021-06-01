@@ -26,7 +26,7 @@ const api =
 
     try {
       const response = await axios.request({
-        baseURL: 'http://localhost:5000/api',
+        baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
         url,
         method,
         data,
