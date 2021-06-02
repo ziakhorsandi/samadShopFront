@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/samadShopFront/static/css/main.6a1e6506.chunk.css",
-    "main.js": "/samadShopFront/static/js/main.9b40055e.chunk.js",
-    "main.js.map": "/samadShopFront/static/js/main.9b40055e.chunk.js.map",
+    "main.js": "/samadShopFront/static/js/main.0b2d413b.chunk.js",
+    "main.js.map": "/samadShopFront/static/js/main.0b2d413b.chunk.js.map",
     "runtime-main.js": "/samadShopFront/static/js/runtime-main.f8b7d14f.js",
     "runtime-main.js.map": "/samadShopFront/static/js/runtime-main.f8b7d14f.js.map",
     "static/css/2.6b560088.chunk.css": "/samadShopFront/static/css/2.6b560088.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.6b560088.chunk.css",
     "static/js/2.1b7aee22.chunk.js",
     "static/css/main.6a1e6506.chunk.css",
-    "static/js/main.9b40055e.chunk.js"
+    "static/js/main.0b2d413b.chunk.js"
   ]
 }
