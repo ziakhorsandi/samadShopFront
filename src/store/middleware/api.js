@@ -26,7 +26,7 @@ const api =
 
     try {
       const response = await axios.request({
-        baseURL: `${process.env.REACT_APP_SERVER_URL}api`,
+        baseURL: `${process.env.REACT_APP_SERVER_URL}/api`,
         url,
         method,
         data,

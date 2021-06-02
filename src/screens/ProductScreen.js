@@ -124,7 +124,7 @@ const ProductScreen = ({ match }) => {
                       className={classes.img}
                       component='img'
                       alt='...'
-                      src={product.image}
+                      src={`${process.env.REACT_APP_SERVER_URL}${product.image}`}
                       // image={product.image}
                     />
                   </Grid>

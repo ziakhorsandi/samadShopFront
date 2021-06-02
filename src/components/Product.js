@@ -41,7 +41,7 @@ const Product = ({ product }) => {
           component='img'
           alt='Contemplative Reptile'
           height='140'
-          image={product.image}
+          src={`${process.env.REACT_APP_SERVER_URL}${product.image}`}
         />
         <CardContent>
           <Typography gutterBottom variant='h6' component='h2'>

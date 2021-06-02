@@ -24,7 +24,7 @@ import PrivateRoute from './components/PrivateRoute';
 function App() {
   return (
     <Provider store={configureStore()}>
-      <Router>
+      <Router basename='samadShopFront'>
         <Header />
         <Switch>
           <Route path='/product/:id' component={ProductScreen} />

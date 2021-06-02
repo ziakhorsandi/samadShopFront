@@ -70,7 +70,7 @@ const CartScreen = ({ match, location }) => {
                         className={classes.img}
                         component='img'
                         alt='...'
-                        src={item.image}
+                        src={`${process.env.REACT_APP_SERVER_URL}${item.image}`}
                       />
                     </Grid>
                     <Grid item xs={12} sm={3} md={3} className={classes.center}>

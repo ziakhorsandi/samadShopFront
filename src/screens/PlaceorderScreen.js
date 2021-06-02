@@ -140,7 +140,7 @@ const PlaceorderScreen = () => {
                       <Typography key={item.id} variant='h2'>
                         <div className={classes.cartItem}>
                           <img
-                            src={item.image}
+                            src={`${process.env.REACT_APP_SERVER_URL}${item.image}`}
                             alt='...'
                             className={classes.img}
                           />

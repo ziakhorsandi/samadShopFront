@@ -343,6 +343,7 @@ const ProductEditCreateScreen = ({ match }) => {
                       className={classes.img}
                       component='img'
                       alt='...'
+                      // src={`${process.env.REACT_APP_SERVER_URL}${image}`}
                       src={image}
                       // image={image}
                     />

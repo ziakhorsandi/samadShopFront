@@ -121,7 +121,7 @@ const ProductCarousel = () => {
               className={classes.img}
               component='img'
               alt='...'
-              src={item.image}
+              src={`${process.env.REACT_APP_SERVER_URL}${item.image}`}
             />
             <span className={classes.imageBackdrop} />
             <span className={classes.imageButton}>
