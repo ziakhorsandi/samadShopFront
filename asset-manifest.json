@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/samadshopfront/static/css/main.6a1e6506.chunk.css",
+    "main.js": "/samadshopfront/static/js/main.9b40055e.chunk.js",
+    "main.js.map": "/samadshopfront/static/js/main.9b40055e.chunk.js.map",
+    "runtime-main.js": "/samadshopfront/static/js/runtime-main.1eebbefa.js",
+    "runtime-main.js.map": "/samadshopfront/static/js/runtime-main.1eebbefa.js.map",
+    "static/css/2.4ce9e501.chunk.css": "/samadshopfront/static/css/2.4ce9e501.chunk.css",
+    "static/js/2.1b7aee22.chunk.js": "/samadshopfront/static/js/2.1b7aee22.chunk.js",
+    "static/js/2.1b7aee22.chunk.js.map": "/samadshopfront/static/js/2.1b7aee22.chunk.js.map",
+    "static/js/3.6df95fe0.chunk.js": "/samadshopfront/static/js/3.6df95fe0.chunk.js",
+    "static/js/3.6df95fe0.chunk.js.map": "/samadshopfront/static/js/3.6df95fe0.chunk.js.map",
+    "index.html": "/samadshopfront/index.html",
+    "static/css/2.4ce9e501.chunk.css.map": "/samadshopfront/static/css/2.4ce9e501.chunk.css.map",
+    "static/css/main.6a1e6506.chunk.css.map": "/samadshopfront/static/css/main.6a1e6506.chunk.css.map",
+    "static/js/2.1b7aee22.chunk.js.LICENSE.txt": "/samadshopfront/static/js/2.1b7aee22.chunk.js.LICENSE.txt",
+    "static/media/Vazir.8e158e3a.ttf": "/samadshopfront/static/media/Vazir.8e158e3a.ttf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1eebbefa.js",
+    "static/css/2.4ce9e501.chunk.css",
+    "static/js/2.1b7aee22.chunk.js",
+    "static/css/main.6a1e6506.chunk.css",
+    "static/js/main.9b40055e.chunk.js"
+  ]
+}
